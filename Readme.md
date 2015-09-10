@@ -1,4 +1,4 @@
-## Instructions d'installation du module CheckYourData sur Prestashop
+## Instructions d'installation du module CheckYourData sur Prestashop (manuellement)
 
 - connectez vous à l'interface d'administration de votre prestashop
 - allez dans 'Modules'
@@ -10,6 +10,6 @@
 - puis une fois l'installation ok, cliquez sur configurer
 - vous devrez renseigner dans cet écran les informations de connexion qui vous seront communiquées par mail
 
-# Mise à jour du module
+## Mise à jour du module
 - mêmes opérations que pour une installation initiale :
 Le module sera remplacé par la nouvelle version
