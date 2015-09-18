@@ -118,7 +118,36 @@ class CheckYourData extends Module
      */
     public function uninstall()
     {
-        return parent::uninstall();
+        $ko = false;
+        
+        if (_PS_VERSION_ < '1.5.0.0') {
+            // hooks PS 1.4 differents as 1.5+
+            // fonctions Alias PS1.4 at end of file
+            // hooks for PS1.4 :
+            // http://doc.prestashop.com/display/PS14/Creating+a+PrestaShop+module
+            // #CreatingaPrestaShopmodule-AlistofPrestaShophooks
+            $ko = $ko || !$this->unregisterHook('header');
+            $ko = $ko || !$this->unregisterHook('paymentTop');
+            $ko = $ko || !$this->unregisterHook('updateOrderStatus');
+            
+            // REFUND
+            $ko = $ko || !$this->unregisterHook('cancelProduct');
+        } else {
+            $ko = $ko || !$this->unregisterHook('header');
+            $ko = $ko || !$this->unregisterHook('displayPaymentTop');
+            $ko = $ko || !$this->unregisterHook('actionOrderStatusUpdate');
+            
+            // REFUND
+            if (_PS_VERSION_ < '1.6.0.0') {
+                $ko = $ko || !$this->unregisterHook('displayAdminOrder');
+            }
+
+            $ko = $ko || !$this->unregisterHook('actionObjectOrderDetailUpdateAfter');
+            $ko = $ko || !$this->unregisterHook('displayAdminOrderContentOrder');
+        }
+        $ko = $ko || !parent::uninstall();
+        
+        return !$ko;
     }
     
     /**
@@ -439,11 +468,8 @@ class CheckYourData extends Module
         $modules = array();
         $pms = PaymentModule::getInstalledPaymentModules();
         foreach ($pms as $pm) {
-            if (is_file(_PS_MODULE_DIR_.$pm['name'].'/'.$pm['name'].'.php')) {
-                include_once(_PS_MODULE_DIR_.$pm['name'].'/'.$pm['name'].'.php');
-                $p = new $pm['name']();
-                $modules [$pm['id_module']] = $p->displayName;
-            }
+            $p = Module::getInstanceByName($pm['name']);
+            $modules [$pm['id_module']] = $p->displayName;
         }
         
         $data = array(
@@ -476,7 +502,7 @@ class CheckYourData extends Module
             }
             // TOKEN
             $token = (string) Tools::getValue('checkyourdata_token');
-            if (!$token || empty($token) || !Validate::isGenericName($token)) {
+            if (empty($token) || !Validate::isGenericName($token)) {
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('checkyourdata_token', $token);
@@ -606,26 +632,15 @@ class CheckYourData extends Module
      */
     public function displayFormPs14()
     {
-        $html = '<form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" method="post">
-			<fieldset class="">
-				<legend><img src="../img/admin/cog.gif" alt="" class="middle" />'.$this->l('Settings')
-                                .'</legend>
-				<label>'.$this->l('Clée d\'accès CheckYourData').'</label>
-				<div class="margin-form">
-                                    <input name="checkyourdata_token" id="checkyourdata_token" value="'.
-                                    Configuration::get('checkyourdata_token').'" class="" size="30" type="text">
-				</div>
-				<label>'.$this->l('Google UA pour ajouter un tracking analytics standard').'</label>
-				<div class="margin-form">
-                                    <input name="checkyourdata_ua" id="checkyourdata_ua" value="'.
-                                    Configuration::get('checkyourdata_ua').'" class="" size="30" type="text">
-				</div>
-				<center><input type="submit" name="submit'.$this->name.'" '
-                                . 'value="'.$this->l('Save').'" class="button" /></center>
-			</fieldset>
-		</form>';
-
-        return $html;
+        $this->context->smarty->assign(
+            array(
+                'action_url' => Tools::safeOutput($_SERVER['REQUEST_URI']),
+                'token' => Configuration::get('checkyourdata_token'),
+                'ua' => Configuration::get('checkyourdata_ua'),
+                'submit_name' => 'submit'.$this->name,
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/admin/configuration_form_ps14.tpl');
     }
 
     /**

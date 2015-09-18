@@ -67,6 +67,7 @@ class CheckYourDataWSHelper
             curl_setopt($c, CURLOPT_POSTFIELDS, $dat);
             curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
             $res = curl_exec($c);
+            curl_close($c);
         } else {
             // otherwise : file_get_contents
             $opts = array('http' =>
@@ -81,7 +82,9 @@ class CheckYourDataWSHelper
         }
         
         $ret = Tools::jsonDecode($res, true);
-        Configuration::updateValue('checkyourdata_last_errors', implode(', ', $ret['errors']));
+        if ($ret != null) {
+            Configuration::updateValue('checkyourdata_last_errors', implode(', ', $ret['errors']));
+        }
         
         return $ret;
     }
