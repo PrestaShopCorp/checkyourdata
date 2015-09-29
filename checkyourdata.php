@@ -68,13 +68,13 @@ class CheckYourData extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('CheckYourData Prestashop Module');
-        $this->description = $this->l('Reporte précisément les transactions dans GoogleAnalytics.');
+        $this->displayName = $this->l('CheckYourData Prestashop Module','checkyourdata');
+        $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.','checkyourdata');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
         if (!Configuration::get('checkyourdata_token')) {
-            $this->warning = $this->l("Clée d'accès à CheckYourData.net non configurée");
+            $this->warning = $this->l('Access key to checkyourdata.net not configured','checkyourdata');
         }
         
         if (_PS_VERSION_ < '1.5.0.0') {
@@ -95,12 +95,7 @@ class CheckYourData extends Module
                 }
                 // warning if UA of ganalytics module same as checkyourdata module
                 if ($gaUa !== false && $gaUa == $dcUa) {
-                    $this->warning = $this->l(
-                        "Votre code de suivi google analytics est déjà présent (configuré dans le"
-                        . " module prestashop google analytics), le tracking risque d'être comptabilisé en double"
-                        . " dans Google Analytics. Veuillez désactiver le module prestashop google analytics pour"
-                        . " ne plus avoir ce message, ou utiliser une autre propriété analytics (autre UA)"
-                    );
+                    $this->warning = $this->l('Your Google Analytics UA tracking id is already set (in GoogleAnalytics module). Tracking might be duplicated in Google Anlaytics. You should desactivate the ganalytics module, or set a new google analytics tracking ID in Checkyourdata module.','checkyourdata');
                 }
             }
         }
@@ -120,23 +115,15 @@ class CheckYourData extends Module
     {
         $ko = false;
         
+        // Common Hooks
+        $ko = $ko || !$this->unregisterHook('header');
+        $ko = $ko || !$this->unregisterHook('paymentTop');
+        $ko = $ko || !$this->unregisterHook('updateOrderStatus');
+        
         if (_PS_VERSION_ < '1.5.0.0') {
-            // hooks PS 1.4 differents as 1.5+
-            // fonctions Alias PS1.4 at end of file
-            // hooks for PS1.4 :
-            // http://doc.prestashop.com/display/PS14/Creating+a+PrestaShop+module
-            // #CreatingaPrestaShopmodule-AlistofPrestaShophooks
-            $ko = $ko || !$this->unregisterHook('header');
-            $ko = $ko || !$this->unregisterHook('paymentTop');
-            $ko = $ko || !$this->unregisterHook('updateOrderStatus');
-            
             // REFUND
             $ko = $ko || !$this->unregisterHook('cancelProduct');
         } else {
-            $ko = $ko || !$this->unregisterHook('header');
-            $ko = $ko || !$this->unregisterHook('displayPaymentTop');
-            $ko = $ko || !$this->unregisterHook('actionOrderStatusUpdate');
-            
             // REFUND
             if (_PS_VERSION_ < '1.6.0.0') {
                 $ko = $ko || !$this->unregisterHook('displayAdminOrder');
@@ -158,23 +145,15 @@ class CheckYourData extends Module
     {
         $ko = !parent::install();
         
+        // Commons Hooks
+        $ko = $ko || !$this->registerHook('header');
+        $ko = $ko || !$this->registerHook('paymentTop');
+        $ko = $ko || !$this->registerHook('updateOrderStatus');
+        
         if (_PS_VERSION_ < '1.5.0.0') {
-            // hooks PS 1.4 differents as 1.5+
-            // fonctions Alias PS1.4 at end of file
-            // hooks for PS1.4 :
-            // http://doc.prestashop.com/display/PS14/Creating+a+PrestaShop+module
-            // #CreatingaPrestaShopmodule-AlistofPrestaShophooks
-            $ko = $ko || !$this->registerHook('header');
-            $ko = $ko || !$this->registerHook('paymentTop');
-            $ko = $ko || !$this->registerHook('updateOrderStatus');
-            
             // REFUND
             $ko = $ko || !$this->registerHook('cancelProduct');
         } else {
-            $ko = $ko || !$this->registerHook('header');
-            $ko = $ko || !$this->registerHook('displayPaymentTop');
-            $ko = $ko || !$this->registerHook('actionOrderStatusUpdate');
-            
             // REFUND
             if (_PS_VERSION_ < '1.6.0.0') {
                 $ko = $ko || !$this->registerHook('displayAdminOrder');
@@ -268,7 +247,7 @@ class CheckYourData extends Module
      * HOOK displayHeader : add Google Analytics JS tracking code
      * @return string : html to add to header
      */
-    public function hookDisplayHeader()
+    public function hookHeader()
     {
         $token = Configuration::get('checkyourdata_token');
         // if module is not configured
@@ -292,7 +271,7 @@ class CheckYourData extends Module
      * HOOK Payment choice page : JS call to APP, order init
      * @return string : html / JS to add to page
      */
-    public function hookDisplayPaymentTop()
+    public function hookPaymentTop()
     {
         // get CYD token
         $token = Configuration::get('checkyourdata_token');
@@ -360,7 +339,7 @@ class CheckYourData extends Module
      * HOOK order state change
      * @param type $params : array containing order details
      */
-    public function hookActionOrderStatusUpdate($params)
+    public function hookUpdateOrderStatus($params)
     {
         $token = Configuration::get('checkyourdata_token');
         if (empty($token)) {
@@ -498,7 +477,7 @@ class CheckYourData extends Module
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('checkyourdata_ua', $ua);
-                $output .= $this->displayConfirmation($this->l('UA mis à jour'));
+                $output .= $this->displayConfirmation($this->l('UA updated','checkyourdata'));
             }
             // TOKEN
             $token = (string) Tools::getValue('checkyourdata_token');
@@ -506,13 +485,13 @@ class CheckYourData extends Module
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('checkyourdata_token', $token);
-                $output .= $this->displayConfirmation($this->l('Token mis à jour'));
+                $output .= $this->displayConfirmation($this->l('Token updated','checkyourdata'));
                 
                 // send params to APP if token set
                 $res = $this->sendShopParamsToApp($token);
                 if ($res['state'] == 'ok') {
                     $output .= $this->displayConfirmation(
-                        $this->l('Configuration mise à jour sur https://'.self::$dcUrl)
+                        sprintf($this->l('Configuration saved on %s','checkyourdata'), 'https://'.self::$dcUrl)
                     );
                 }
             }
@@ -568,14 +547,14 @@ class CheckYourData extends Module
             'input' => array(
                 array(
                     'type' => 'text',
-                    'label' => $this->l("Clée d'accès CheckYourData"),
+                    'label' => $this->l('Access key to CheckYourData','checkyourdata'),
                     'name' => 'checkyourdata_token',
                     'size' => 20,
                     'required' => true
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l("Google UA pour ajouter un tracking analytics standard"),
+                    'label' => $this->l('Google UA tracking ID, to add universal tracking on your site.','checkyourdata'),
                     'name' => 'checkyourdata_ua',
                     'size' => 20,
                     'required' => false
@@ -646,18 +625,6 @@ class CheckYourData extends Module
     /**
      * Aliases for PS1.4 hooks
      */
-    public function hookHeader()
-    {
-        return $this->hookDisplayHeader();
-    }
-    public function hookPaymentTop()
-    {
-        return $this->hookDisplayPaymentTop();
-    }
-    public function hookUpdateOrderStatus($params)
-    {
-        return $this->hookActionOrderStatusUpdate($params);
-    }
     public function hookCancelProduct($params)
     {
         // TODO : PS1.4 refund

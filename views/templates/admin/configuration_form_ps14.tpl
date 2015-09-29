@@ -21,11 +21,11 @@
         <legend>
             <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Settings'}
         </legend>
-        <label>{l s='Clée d\'accès CheckYourData' mod="checkyourdata"}</label>
+        <label>{l s='Access key to CheckYourData' mod="checkyourdata"}</label>
         <div class="margin-form">
             <input name="checkyourdata_token" id="checkyourdata_token" value="{$token|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
         </div>
-        <label>{l s='Google UA pour ajouter un tracking analytics standard' mod="checkyourdata"}</label>
+        <label>{l s='Google UA tracking ID, to add universal tracking on your site.' mod="checkyourdata"}</label>
         <div class="margin-form">
             <input name="checkyourdata_ua" id="checkyourdata_ua" value="{$ua|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
         </div>
