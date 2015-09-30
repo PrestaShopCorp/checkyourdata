@@ -68,13 +68,13 @@ class CheckYourData extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('CheckYourData Prestashop Module','checkyourdata');
-        $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.','checkyourdata');
+        $this->displayName = $this->l('CheckYourData Prestashop Module');
+        $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
         if (!Configuration::get('checkyourdata_token')) {
-            $this->warning = $this->l('Access key to checkyourdata.net not configured','checkyourdata');
+            $this->warning = $this->l('Access key to checkyourdata.net not configured');
         }
         
         if (_PS_VERSION_ < '1.5.0.0') {
@@ -95,7 +95,7 @@ class CheckYourData extends Module
                 }
                 // warning if UA of ganalytics module same as checkyourdata module
                 if ($gaUa !== false && $gaUa == $dcUa) {
-                    $this->warning = $this->l('Your Google Analytics UA tracking id is already set (in GoogleAnalytics module). Tracking might be duplicated in Google Anlaytics. You should desactivate the ganalytics module, or set a new google analytics tracking ID in Checkyourdata module.','checkyourdata');
+                    $this->warning = $this->l('Your Google Analytics UA tracking id is already set (in GoogleAnalytics module). Tracking might be duplicated in Google Anlaytics. You should desactivate the ganalytics module, or set a new google analytics tracking ID in Checkyourdata module.');
                 }
             }
         }
@@ -477,7 +477,7 @@ class CheckYourData extends Module
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('checkyourdata_ua', $ua);
-                $output .= $this->displayConfirmation($this->l('UA updated','checkyourdata'));
+                $output .= $this->displayConfirmation($this->l('UA updated'));
             }
             // TOKEN
             $token = (string) Tools::getValue('checkyourdata_token');
@@ -485,13 +485,13 @@ class CheckYourData extends Module
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('checkyourdata_token', $token);
-                $output .= $this->displayConfirmation($this->l('Token updated','checkyourdata'));
+                $output .= $this->displayConfirmation($this->l('Token updated'));
                 
                 // send params to APP if token set
                 $res = $this->sendShopParamsToApp($token);
                 if ($res['state'] == 'ok') {
                     $output .= $this->displayConfirmation(
-                        sprintf($this->l('Configuration saved on %s','checkyourdata'), 'https://'.self::$dcUrl)
+                        sprintf($this->l('Configuration saved on %s'), 'https://'.self::$dcUrl)
                     );
                 }
             }
@@ -547,14 +547,14 @@ class CheckYourData extends Module
             'input' => array(
                 array(
                     'type' => 'text',
-                    'label' => $this->l('Access key to CheckYourData','checkyourdata'),
+                    'label' => $this->l('Access key to CheckYourData'),
                     'name' => 'checkyourdata_token',
                     'size' => 20,
                     'required' => true
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l('Google UA tracking ID, to add universal tracking on your site.','checkyourdata'),
+                    'label' => $this->l('Google UA tracking ID, to add universal tracking on your site.'),
                     'name' => 'checkyourdata_ua',
                     'size' => 20,
                     'required' => false
