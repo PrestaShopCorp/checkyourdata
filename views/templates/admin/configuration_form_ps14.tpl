@@ -16,7 +16,7 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *
  *}
-<form action="{$action_url|escape:'htmlall':'UTF-8'}" method="post">
+<form action="{$action_url|escape:'javascript':'UTF-8'}" method="post">
     <fieldset class="">
         <legend>
             <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Settings'}
