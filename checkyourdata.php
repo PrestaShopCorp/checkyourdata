@@ -613,7 +613,7 @@ class CheckYourData extends Module
     {
         $this->context->smarty->assign(
             array(
-                'action_url' => Tools::safeOutput($_SERVER['REQUEST_URI']),
+                'action_url' => $_SERVER['REQUEST_URI'],
                 'token' => Configuration::get('checkyourdata_token'),
                 'ua' => Configuration::get('checkyourdata_ua'),
                 'submit_name' => 'submit'.$this->name,
