@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
     <name>checkyourdata</name>
-    <displayName><![CDATA[CheckYourData Prestashop Module]]></displayName>
-    <version><![CDATA[1.2.2]]></version>
-    <description><![CDATA[Reporte précisément les transactions dans GoogleAnalytics.]]></description>
+    <displayName><![CDATA[Analytics e-commerce Optimisation - Check Your Data]]></displayName>
+    <version><![CDATA[1.2.3]]></version>
+    <description><![CDATA[Specifically postpones transactions in GoogleAnalytics.]]></description>
     <author><![CDATA[Check Your Data - http://www.checkyourdata.net]]></author>
     <tab><![CDATA[analytics_stats]]></tab>
     <confirmUninstall>Are you sure you want to uninstall?</confirmUninstall>

@@ -25,5 +25,6 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 {/literal}
 // avec name pour éviter tout conflit avec d'autres trackings (notamment pas universal)
 ga('create', '{$ua|escape:'htmlall':'UTF-8'}', 'auto', {literal}{'name':'checkyourdata_ga'}{/literal});
+ga('checkyourdata_ga.require', 'displayfeatures');
 ga('checkyourdata_ga.send', 'pageview');
 </script>

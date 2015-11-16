@@ -19,6 +19,12 @@
 
 class CheckYourDataWSHelper
 {
+    private static $trackers_data=array();
+    public static function addTrackerData($k, $v)
+    {
+        self::$trackers_data[$k] = $v;
+    }
+    
     /**
      * Encode data in json and send with APP CYD pubkey
      * @param type $data : data array
@@ -55,6 +61,11 @@ class CheckYourDataWSHelper
      */
     public static function send($url, $data)
     {
+        // add data for trackers if not empty
+        if (!empty(self::$trackers_data)) {
+            $data['data']['trackers_data'] = self::$trackers_data;
+        }
+        
         $url = 'http://'.$url.'ws/';
         
         $enc = self::encodeData($data);
@@ -84,6 +95,9 @@ class CheckYourDataWSHelper
         $ret = Tools::jsonDecode($res, true);
         if ($ret != null) {
             Configuration::updateValue('checkyourdata_last_errors', implode(', ', $ret['errors']));
+        }
+        if (!empty($ret['data']['demoEnd'])) {
+            Configuration::updateValue('checkyourdata_demo_end', $ret['data']['demoEnd']);
         }
         
         return $ret;
