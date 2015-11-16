@@ -12,7 +12,7 @@
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
  *
- *  @author    Thomas RIBIERE <thomas.ribiere@gmail.com>
+ *  @author    Check Your Data <contact@checkyourdata.net>
  *  @copyright 2015 CheckYourData
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
@@ -29,13 +29,17 @@ class CheckYourData extends Module
         if (! class_exists('CheckYourDataWSHelper')) {
             include_once dirname(__FILE__).'/wshelper.inc.php';
         }
+        // trackers
+        if (! class_exists('CheckYourDataGAnalytics')) {
+            include_once dirname(__FILE__).'/trackers/ganalytics.inc.php';
+        }
         
         // Environement configuration
         $host = $_SERVER['HTTP_HOST'];
         if (strpos($host, 'ribie.re')) {
             // RECETTE
             self::$dcUrl = 'app-preprod.checkyourdata.net/';
-        } elseif (strpos($host, 'cyd.com')) {
+        } elseif (strpos($host, 'cyd.com') || strpos($host, 'dc.com')) {
             // LOCAL
             self::$dcUrl = 'app.cyd.com/';
         }
@@ -43,12 +47,7 @@ class CheckYourData extends Module
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
         
-        // 1.0.3 => prototype version
-        // 1.1.0 => compat PS1.4 + rework + comments
-        // 1.1.1 => send data adjust for APP (currency + payment module labels)
-        // 1.2.0 => adjusts for APP v1.0
-        // 1.2.1 => http / https
-        $this->version = '1.2.2';
+        $this->version = '1.2.3';
 
         $this->author = 'Check Your Data - http://www.checkyourdata.net';
         
@@ -68,35 +67,40 @@ class CheckYourData extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('CheckYourData Prestashop Module');
+        $this->displayName = $this->l('Analytics e-commerce Optimisation - Check Your Data');
         $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
         if (!Configuration::get('checkyourdata_token')) {
             $this->warning = $this->l('Access key to checkyourdata.net not configured');
+        } else {
+            // Warning if demo
+            $demoEnd = Configuration::get('checkyourdata_demo_end');
+            if (!empty($demoEnd)) {
+                $dt = new DateTime();
+                $dend = DateTime::createFromFormat('Y-m-d H:i:s', $demoEnd);
+                if ($dt > $dend) {
+                    $this->warning = $this->l('Demo ended. Your data are no more tracked. Please complete your account informations on Check Your Data App');
+                } else {
+                    $this->warning = $this->l('Demo active. Your data are tracked until').' '.$dend->format('d/m/Y H:i:s');
+                }
+            }
         }
+
+
         
         if (_PS_VERSION_ < '1.5.0.0') {
             /** Backward compatibility */
             require(_PS_MODULE_DIR_.$this->name.'/backward_compatibility/backward.php');
         }
         
-        // verify module ganalytics present
-        $dcUa = Configuration::get('checkyourdata_ua');
-        if ($dcUa != null) {
-            $gaUa = '';
-            $ga = Module::getInstanceByName('ganalytics');
-            if ($ga !== false && $ga->active) {
-                // get UA configured
-                $gaUa = Configuration::get('GANALYTICS_ID');// PS 14 / PS 15
-                if ($gaUa === false) {
-                    $gaUa = Configuration::get('GA_ACCOUNT_ID');// PS 16
-                }
-                // warning if UA of ganalytics module same as checkyourdata module
-                if ($gaUa !== false && $gaUa == $dcUa) {
-                    $this->warning = $this->l('Your Google Analytics UA tracking id is already set (in GoogleAnalytics module). Tracking might be duplicated in Google Anlaytics. You should desactivate the ganalytics module, or set a new google analytics tracking ID in Checkyourdata module.');
-                }
+        // TRACKERS
+        $trackers = Tools::jsonEncode(Configuration::get('checkyourdata_trackers'), true);
+        if ($trackers != null && !empty($trackers['ganalytics']['active']) && $trackers['ganalytics']['active']) {
+            $res = CheckYourDataGAnalytics::init($trackers['ganalytics']['ua'], $this);
+            if ($res != '') {
+                $this->warning = $res;
             }
         }
         
@@ -120,6 +124,10 @@ class CheckYourData extends Module
         $ko = $ko || !$this->unregisterHook('paymentTop');
         $ko = $ko || !$this->unregisterHook('updateOrderStatus');
         
+        if (_PS_VERSION_ >= '1.5.0.0' && _PS_VERSION_ < '1.6.0.0') {
+            $ko = $ko || !$this->unregisterHook('displayMobileHeader');
+        }
+        
         if (_PS_VERSION_ < '1.5.0.0') {
             // REFUND
             $ko = $ko || !$this->unregisterHook('cancelProduct');
@@ -133,6 +141,14 @@ class CheckYourData extends Module
             $ko = $ko || !$this->unregisterHook('displayAdminOrderContentOrder');
         }
         $ko = $ko || !parent::uninstall();
+        
+        if (!$ko) {
+            // reset conf data
+            Configuration::updateValue('checkyourdata_token', '');
+            Configuration::updateValue('checkyourdata_user_email', '');
+            Configuration::updateValue('checkyourdata_last_errors', '');
+            Configuration::updateValue('checkyourdata_demo_end', '');
+        }
         
         return !$ko;
     }
@@ -150,6 +166,10 @@ class CheckYourData extends Module
         $ko = $ko || !$this->registerHook('paymentTop');
         $ko = $ko || !$this->registerHook('updateOrderStatus');
         
+        if (_PS_VERSION_ >= '1.5.0.0' && _PS_VERSION_ < '1.6.0.0') {
+            $ko = $ko || !$this->registerHook('displayMobileHeader');
+        }
+
         if (_PS_VERSION_ < '1.5.0.0') {
             // REFUND
             $ko = $ko || !$this->registerHook('cancelProduct');
@@ -247,6 +267,14 @@ class CheckYourData extends Module
      * HOOK displayHeader : add Google Analytics JS tracking code
      * @return string : html to add to header
      */
+    public function hookDisplayMobileHeader()
+    {
+        return $this->hookHeader();
+    }
+    /**
+     * HOOK displayHeader : add Google Analytics JS tracking code
+     * @return string : html to add to header
+     */
     public function hookHeader()
     {
         $token = Configuration::get('checkyourdata_token');
@@ -254,18 +282,27 @@ class CheckYourData extends Module
         if (empty($token)) {
             return;
         }
+        $out = '';
         
-        // get UA configured
-        $ua = Configuration::get('checkyourdata_ua');
-        if (empty($ua)) {
-            // no tracking if CYD UA not set
+        // sur toutes les pages, sauf sur la confirmation
+        $controller = $this->context->controller->php_self;
+        if ($controller == 'order-confirmation') {
             return;
         }
         
-        $this->context->smarty->assign('ua', $ua);
+        // trackers
+        $trackers = Tools::jsonDecode(Configuration::get('checkyourdata_trackers'), true);
+        // ganalytics is activated ?
+        if ($trackers['ganalytics']['active']) {
+            $this->trackerAction(
+                CheckYourDataGAnalytics::hookHeader($trackers['ganalytics']['ua']),
+                $out
+            );
+        }
         
-        return $this->display(__FILE__, 'views/templates/hook/header.tpl');
+        return $out;
     }
+    
     
     /**
      * HOOK Payment choice page : JS call to APP, order init
@@ -278,17 +315,25 @@ class CheckYourData extends Module
         if (empty($token)) {
             return '';
         }
-        // get UA configured
-        $ua = Configuration::get('checkyourdata_ua');
-        if (empty($ua)) {
-            // no tracking if CYD UA not set
-            return;
-        }
         
-        // data to send
+        $out = '';
+        
         // get order (cart)
         $cart = $this->context->cart;
 
+        // trackers
+        $trackers = Tools::jsonDecode(Configuration::get('checkyourdata_trackers'), true);
+        // ganalytics is activated ?
+        if ($trackers['ganalytics']['active']) {
+            $this->trackerAction(
+                CheckYourDataGAnalytics::hookPaymentTop($trackers['ganalytics']['ua'], $cart),
+                $out
+            );
+        }
+
+        // preparation de l'appel vers APP pour initOrder
+        
+        // data to send
         // amounts
         $trans = array();
         $totalWithoutTaxes = $cart->getOrderTotal(false, Cart::ONLY_PRODUCTS);
@@ -322,17 +367,14 @@ class CheckYourData extends Module
                 'items' => Tools::jsonEncode($items),
             ),
         );
-        $enc = CheckYourDataWSHelper::encodeData($data);
-
-        // add JS vars
-        $this->context->smarty->assign(
-            array(
-                'url' => '//'.self::$dcUrl.'ws/',
-                'data' => 'k='.$enc['key'].'&d='.$enc['data'],
-            )
-        );
-
-        return $this->display(__FILE__, 'views/templates/hook/payment-top.tpl');
+        
+        $res = CheckYourDataWSHelper::send(self::$dcUrl, $data);
+        // errors
+        if ($res['state'] != 'ok') {
+            error_log('Checkyourdata WS Init Order error : '.implode("\n", $res['errors']));
+        }
+        
+        return $out;
     }
     
     /**
@@ -341,29 +383,68 @@ class CheckYourData extends Module
      */
     public function hookUpdateOrderStatus($params)
     {
+        // get CYD token
         $token = Configuration::get('checkyourdata_token');
         if (empty($token)) {
             return;
         }
-        $nextState = $params['newOrderStatus']->id;
+
+        // send to APP
+        $res = $this->sendOrderToApp($params['id_order'], $params['newOrderStatus']->id);
         
-        $order = new Order($params['id_order']);
+        // errors
+        $toResend = Configuration::get('checkyourdata_orders_in_error');
+        if (!empty($toResend)) {
+            $toResend = Tools::jsonDecode($toResend, true);
+        } else {
+            $toResend = array();
+        }
+        if ($res['state'] != 'ok') {
+            // save order to re send
+            // add current order
+            if (!in_array($params['id_order'], $toResend)) {
+                $toResend[] = $params['id_order'];
+                Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($toResend));
+            }
+            error_log('Checkyourdata WS Update Order error : '.implode("\n", $res['errors']));
+        } else {
+            // all ok
+            // try to resend old orders
+            $newToResend=array();
+            foreach ($toResend as $oid) {
+                if (empty($oid)) {
+                    continue;
+                }
+                $r = $this->sendOrderToApp($oid);
+                if ($r['state'] != 'ok') {
+                    // keep in resend array
+                    $newToResend[] = $oid;
+                }
+            }
+            Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($newToResend));
+        }
+    }
+    
+    private function sendOrderToApp($orderId, $nextState = null)
+    {
+        $token = Configuration::get('checkyourdata_token');
+        $order = new Order($orderId);
         
         if (!Validate::isLoadedObject($order)) {
             // no order
             return;
         }
-        $currentState = $order->getCurrentState();
-        if ($currentState === false) {
-            $currentState = '0';
+        
+        if ($nextState === null) {
+            $nextState = $order->getCurrentState();
         }
 
         // conversion rate
         $conversion_rate = 1;
         $currency = new Currency((int) $order->id_currency);
-        if ($order->id_currency != Configuration::get('PS_CURRENCY_DEFAULT')) {
-            $conversion_rate = (int) $currency->conversion_rate;
-        }
+        /*if ($order->id_currency != Configuration::get('PS_CURRENCY_DEFAULT')) {
+            $conversion_rate = (float) $currency->conversion_rate;
+        }*/
 
         // amounts (with taxes on shipping)
         $tax = $order->getTotalProductsWithTaxes() - $order->getTotalProductsWithoutTaxes();
@@ -398,7 +479,6 @@ class CheckYourData extends Module
         $items = array();
         foreach ($products as $p) {
             $categ = new Category($this->getProductDefaultCategory($p));
-
             $items [$p['product_id'].'_'.$p['product_attribute_id']] = array(
                 'name'=>$p['product_name'],
                 'price'=>Tools::ps_round((float)$p['product_price_wt'] / (float)$conversion_rate, 2),
@@ -424,12 +504,23 @@ class CheckYourData extends Module
             ),
         );
         $res = CheckYourDataWSHelper::send(self::$dcUrl, $data);
-        // errors
-        if ($res['state'] != 'ok') {
-            error_log('Checkyourdata WS Update Order error : '.implode("\n", $res['errors']));
-        }
+        return $res;
     }
     
+    private function trackerAction($trackRes, &$out)
+    {
+        if (!empty($trackRes['tpl'])) {
+            // smarty assign
+            if (!empty($trackRes['tpl']['smarty'])) {
+                $this->context->smarty->assign($trackRes['tpl']['smarty']);
+            }
+            // template load
+            if (!empty($trackRes['tpl']['file'])) {
+                $out .= $this->display(__FILE__, 'views/templates/hook/'.$trackRes['tpl']['file']);
+            }
+        }
+    }
+
     private function sendShopParamsToApp($token)
     {
         // Get default language
@@ -448,8 +539,19 @@ class CheckYourData extends Module
         $pms = PaymentModule::getInstalledPaymentModules();
         foreach ($pms as $pm) {
             $p = Module::getInstanceByName($pm['name']);
-            $modules [$pm['id_module']] = $p->displayName;
+            if (is_object($p)) {
+                $modules [$pm['id_module']] = $p->displayName;
+            }
         }
+
+        // get confirmation page url
+        $l = new Link();
+        $shopUrl = $this->context->shop->getBaseURL();
+        $confirmUrl = str_replace($shopUrl,'',$l->getPageLink('order-confirmation'));
+        
+        // get confirmation page title
+        $meta = MetaCore::getMetaByPage('order-confirmation',$default_lang);
+        $confirmTitle = $meta['title'];
         
         $data = array(
             'token' => $token,
@@ -457,8 +559,46 @@ class CheckYourData extends Module
             'data' => array(
                 'modules' => $modules,
                 'states' => $states,
+                'trackers'=> Configuration::get('checkyourdata_trackers'),
+                'confirm_url' => $confirmUrl,
+                'confirm_title' => $confirmTitle,
             ),
         );
+        return CheckYourDataWSHelper::send(self::$dcUrl, $data);
+    }
+    
+    public function createAccountInApp($email)
+    {
+        // Get default language
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $lang = new Language($default_lang);
+        
+        // Get order states
+        $oss = OrderState::getOrderStates($default_lang);
+        $states = array();
+        foreach ($oss as $os) {
+            $states [$os['id_order_state']] = $os['name'];
+        }
+
+        // Get payment modules
+        $modules = array();
+        $pms = PaymentModule::getInstalledPaymentModules();
+        foreach ($pms as $pm) {
+            $p = Module::getInstanceByName($pm['name']);
+            $modules [$pm['id_module']] = $p->displayName;
+        }
+        
+        $data = array(
+            'action' => 'createAccount',
+            'data' => array(
+                'shopUrl'=> $this->context->shop->getBaseURL(),
+                'email'=> $email,
+                'lang' => $lang->iso_code,
+                'modules' => $modules,
+                'states' => $states,
+            ),
+        );
+
         return CheckYourDataWSHelper::send(self::$dcUrl, $data);
     }
     
@@ -471,19 +611,31 @@ class CheckYourData extends Module
         $output = '';
 
         if (Tools::isSubmit('submit' . $this->name)) {
-            // Google UA
-            $ua = (string) Tools::getValue('checkyourdata_ua');
-            if (!Validate::isGenericName($ua)) {
-                $output .= $this->displayError($this->l('Invalid Configuration value'));
-            } else {
-                Configuration::updateValue('checkyourdata_ua', $ua);
-                $output .= $this->displayConfirmation($this->l('UA updated'));
-            }
+            $trackers = array('ganalytics'=>array(),'lengow'=>array(),'netaffiliation'=>array());
+            // TRACKERS
+            // Google
+            $trackers['ganalytics']['active'] = (string) Tools::getValue('checkyourdata_trackers_ganalytics') == 'on';
+            $trackers['ganalytics']['ua'] = (string) Tools::getValue('checkyourdata_ganalytics_ua');
+            // Lengow
+            $trackers['lengow']['active'] = (string) Tools::getValue('checkyourdata_trackers_lengow') == 'on';
+            $trackers['lengow']['id'] = (string) Tools::getValue('checkyourdata_lengow_id');
+            // NetAffiliation
+            $trackers['netaffiliation']['active'] = (string) Tools::getValue('checkyourdata_trackers_netaffiliation') == 'on';
+            $trackers['netaffiliation']['id'] = (string) Tools::getValue('checkyourdata_netaffiliation_id');
+            
+            // save trackers conf
+            Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
+            
             // TOKEN
             $token = (string) Tools::getValue('checkyourdata_token');
             if (empty($token) || !Validate::isGenericName($token)) {
-                $output .= $this->displayError($this->l('Invalid Configuration value'));
+                // reset config data
+                Configuration::updateValue('checkyourdata_token', '');
+                Configuration::updateValue('checkyourdata_user_email', '');
+                Configuration::updateValue('checkyourdata_last_errors', '');
+                Configuration::updateValue('checkyourdata_demo_end', '');
             } else {
+                // set token
                 Configuration::updateValue('checkyourdata_token', $token);
                 $output .= $this->displayConfirmation($this->l('Token updated'));
                 
@@ -495,37 +647,211 @@ class CheckYourData extends Module
                     );
                 }
             }
+        } elseif (Tools::isSubmit('submit' . $this->name .'_signin')) {
+            // token
+            $token = (string) Tools::getValue('checkyourdata_token');
+            if (empty($token)) {
+                // account creation
+                // user email
+                $userEmail = (string) Tools::getValue('checkyourdata_signin_email');
+                // tos
+                $tos = (string) Tools::getValue('checkyourdata_tos_check');
+
+                // form validation
+                $isOk = true;
+                if (empty($userEmail) || !Validate::isEmail($userEmail)) {
+                    $output .= $this->displayError($this->l('Invalid email value'));
+                    $isOk = false;
+                }
+                if (empty($tos) || $tos != 'on') {
+                    $output .= $this->displayError($this->l('You must accept Terms of Sales'));
+                    $isOk = false;
+                }
+                
+                // account creation on checkyourdata app
+                if ($isOk) {
+                    $ret = $this->createAccountInApp($userEmail);
+                    if ($ret['state'] == 'ok') {
+                        // set token
+                        Configuration::updateValue('checkyourdata_token', $ret['data']['token']);
+
+                        // set checkyourdata user
+                        Configuration::updateValue('checkyourdata_user_email', $userEmail);
+
+                        $output .= $this->displayConfirmation(
+                            sprintf($this->l('Account created on %s'), 'https://'.self::$dcUrl)
+                        );
+                    }
+                }
+            } else {
+                // set token
+                Configuration::updateValue('checkyourdata_token', $token);
+
+                // save trackers conf
+                $trackers = array('ganalytics'=>array('active'=>false),'lengow'=>array('active'=>false),'netaffiliation'=>array('active'=>false));
+                Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
+                
+                // send to app
+                $res = $this->sendShopParamsToApp($token);
+                if ($res['state'] == 'ok') {
+                    $output .= $this->displayConfirmation(
+                        sprintf($this->l('Configuration saved on %s'), 'https://'.self::$dcUrl)
+                    );
+                }
+            }
+            
         }
         $errs = Configuration::get('checkyourdata_last_errors');
         if (!empty($errs)) {
             $output .= $this->displayError($errs);
         }
+        // Warning if demo
+        $demoEnd = Configuration::get('checkyourdata_demo_end');
+        if (!empty($demoEnd)) {
+            $dt = new DateTime();
+            $dend = DateTime::createFromFormat('Y-m-d H:i:s', $demoEnd);
+            if ($dt > $dend) {
+                $output .= $this->displayError($this->l('Demo ended. Your data are no more tracked. Please complete your account informations on Check Your Data App'));
+            } else {
+                $output .= $this->displayConfirmation($this->l('Demo active. Your data are tracked until').' '.$dend->format('d/m/Y H:i:s'));
+            }
+        }
         
+        $token = Configuration::get('checkyourdata_token');
         if (_PS_VERSION_ < '1.5.0.0') {
             // HelperForm not defined in PS 1.4
             $output .= $this->displayFormPs14();
         } else {
-            $output .= $this->displayForm();
+            if (empty($token)) {
+                $output .= $this->displayFormNoAccount();
+            } else {
+                $output .= $this->displayForm();
+            }
         }
         
         // header image
-        $token = Configuration::get('checkyourdata_token');
         if (empty($token)) {
             $img = 'no_account.png';
-            $link = 'signin.php';
+            $link = '#fieldset_0';
         } else {
             // random image (from 1 to 5)
             $img = 'com'.rand(1, 5).'.png';
-            $link = '';
+            $link = '//'.self::$dcUrl.'?refer=PRESTA';
         }
         
         $this->context->smarty->assign(
             array(
                 'img_url' => '//'.self::$dcUrl.'img/'.$img,
-                'link_url' => '//'.self::$dcUrl.$link,
+                'link_url' => $link,
             )
         );
-        return $this->display(__FILE__, 'views/templates/admin/configuration.tpl').$output;
+        
+        if (_PS_VERSION_ < '1.6.0.0') {
+            // no bootstrap
+            $output = $this->display(__FILE__, 'views/templates/admin/configuration_ps15.tpl'). $output;
+        } else {
+            $output = $this->display(__FILE__, 'views/templates/admin/configuration.tpl').$output;
+        }
+        
+        return $output;
+    }
+    
+    public function displayFormNoAccount()
+    {
+                // Get default language
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        // Init Fields form array
+        $fields_form = array();
+        $fields_form[0]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Create account on').' http://'.self::$dcUrl,
+            ),
+            'input' => array(
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Shop Url'),
+                    'name' => 'checkyourdata_signin_url',
+                    'size' => 20,
+                    'required' => true,
+                    'disabled' => true,
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Account Email'),
+                    'name' => 'checkyourdata_signin_email',
+                    'size' => 20,
+                    'required' => true,
+                ),
+                array(
+                    'type'    => 'checkbox',
+                    'label'   => $this->l('Terms of Sales'),
+                    'desc'    => $this->l('Viewable on').' <a href="http://'.self::$dcUrl.'cgv.php" target="_blank">http://'.self::$dcUrl.'cgv.php</a>',
+                    'name'    => 'checkyourdata_tos',
+                    'required' => true,
+                    'values'  => array(
+                        'query' => array(array('id'=>'check','label'=>$this->l('Check to accept terms of sales.'))),
+                        'id'    => 'id',
+                        'name'  => 'label'
+                    ),
+                ),
+                
+            ),
+            'submit' => array(
+                'title' => $this->l('Create account'),
+                'class' => 'button'
+            )
+        );
+        $fields_form[1]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Account already created ?'),
+            ),
+            'input' => array(
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Access key to CheckYourData'),
+                    'name' => 'checkyourdata_token',
+                    'size' => 20,
+                    'required' => true,
+                ),
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+                'class' => 'button'
+            )
+        );
+
+        $helper = new HelperForm();
+
+        // Module, token and currentIndex
+        $helper->module = $this;
+        $helper->name_controller = $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+
+        // Language
+        $helper->default_form_language = $default_lang;
+        $helper->allow_employee_form_lang = $default_lang;
+
+        // Title and toolbar
+        $helper->title = $this->displayName;
+        $helper->show_toolbar = true;        // false -> remove toolbar
+        $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
+        $helper->submit_action = 'submit' . $this->name.'_signin';
+
+        // Load current value
+        $helper->fields_value['checkyourdata_token'] = '';
+        $helper->fields_value['checkyourdata_signin_url'] = $this->context->shop->getBaseURL();
+        $userEmail = (string) Tools::getValue('checkyourdata_signin_email');
+        if ($userEmail == '') {
+            $helper->fields_value['checkyourdata_signin_email'] = $this->context->employee->email;
+        } else {
+            $helper->fields_value['checkyourdata_signin_email'] = $userEmail;
+        }
+        $tos = (string) Tools::getValue('checkyourdata_tos_check');
+        $helper->fields_value['checkyourdata_tos_check'] = ($tos == 'on');
+        
+        return $helper->generateForm($fields_form);
     }
     
     /**
@@ -544,21 +870,99 @@ class CheckYourData extends Module
             'legend' => array(
                 'title' => $this->l('Settings'),
             ),
+            'tabs' => array(
+                'global' => $this->l('Check Your Data'),
+                'ganalytics' => $this->l('Google Analytics'),
+                /*'lengow' => $this->l('Lengow'),
+                'netaffiliation' => $this->l('Netaffiliation'),*/
+            ),
             'input' => array(
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('User Account on Check Your Data'),
+                    'name' => 'checkyourdata_user_email',
+                    'size' => 20,
+                    'required' => true,
+                    'disabled' => true,
+                    'tab' => 'global',
+                ),
                 array(
                     'type' => 'text',
                     'label' => $this->l('Access key to CheckYourData'),
                     'name' => 'checkyourdata_token',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
+                    'hint' => $this->l('Available on http://app.checkyourdata.net'),
+                    'tab' => 'global',
+                ),
+                
+                // GANALYTICS
+                array(
+                    'type'    => 'checkbox',
+                    'label'   => $this->l('Tracker activation'),
+                    //'desc'    => $this->l('Check to use tracker.'),
+                    'name'    => 'checkyourdata_trackers',
+                    'values'  => array(
+                        'query' => array(array('id'=>'ganalytics','label'=>$this->l('Check to use tracker.'))),
+                        'id'    => 'id',
+                        'name'  => 'label'
+                    ),
+                    'tab' => 'ganalytics',
                 ),
                 array(
                     'type' => 'text',
-                    'label' => $this->l('Google UA tracking ID, to add universal tracking on your site.'),
-                    'name' => 'checkyourdata_ua',
+                    'label' => $this->l('Google Analytics ID'),
+                    'name' => 'checkyourdata_ganalytics_ua',
                     'size' => 20,
-                    'required' => false
-                )
+                    'required' => false,
+                    'hint' => $this->l('You will find this information on Admin > Google Analytics Account Properties'),
+                    'tab' => 'ganalytics',
+                ),
+                
+                // LENGOW
+                /*array(
+                    'type'    => 'checkbox',
+                    'label'   => $this->l('Tracker activation'),
+                    //'desc'    => $this->l('Check to use tracker.'),
+                    'name'    => 'checkyourdata_trackers',
+                    'values'  => array(
+                        'query' => array(array('id'=>'lengow','label'=>$this->l('Check to use tracker.'))),
+                        'id'    => 'id',
+                        'name'  => 'label'
+                    ),
+                    'tab' => 'lengow',
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('ID Lengow'),
+                    'name' => 'checkyourdata_lengow_id',
+                    'size' => 20,
+                    'required' => false,
+                    'tab' => 'lengow',
+                ),
+                
+                // NETAFF
+                array(
+                    'type'    => 'checkbox',
+                    'label'   => $this->l('Tracker activation'),
+                    //'desc'    => $this->l('Check to use tracker.'),
+                    'name'    => 'checkyourdata_trackers',
+                    'values'  => array(
+                        'query' => array(array('id'=>'netaffiliation','label'=>$this->l('Check to use tracker.'))),
+                        'id'    => 'id',
+                        'name'  => 'label'
+                    ),
+                    'tab' => 'netaffiliation',
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('ID NetAffiliation'),
+                    'name' => 'checkyourdata_netaffiliation_id',
+                    'size' => 20,
+                    'required' => false,
+                    'tab' => 'netaffiliation',
+                ),*/
+                
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
@@ -599,8 +1003,36 @@ class CheckYourData extends Module
         // Load current value
         $token = Configuration::get('checkyourdata_token');
         $helper->fields_value['checkyourdata_token'] = $token;
-        $helper->fields_value['checkyourdata_ua'] = Configuration::get('checkyourdata_ua');
-
+        
+        // TRACKERS
+        $trackers = Configuration::get('checkyourdata_trackers');
+        if (!empty($trackers)) {
+            $trackers = Tools::jsonDecode($trackers, true);
+        } else {
+            $trackers = array(
+                'ganalytics'=>array('active'=>false),
+                'lengow'=>array('active'=>false),
+                'netaffiliation'=>array('active'=>false),
+            );
+        }
+        // GOOGLE
+        $helper->fields_value['checkyourdata_trackers_ganalytics'] = $trackers['ganalytics']['active'];
+        $helper->fields_value['checkyourdata_ganalytics_ua'] = !empty($trackers['ganalytics']['ua'])?$trackers['ganalytics']['ua']:'';
+        // LENGOW
+        /*$helper->fields_value['checkyourdata_trackers_lengow'] = $trackers['lengow']['active'];
+        $helper->fields_value['checkyourdata_lengow_id'] = !empty($trackers['lengow']['id'])?$trackers['lengow']['id']:'';
+        // NetAffiliation
+        $helper->fields_value['checkyourdata_trackers_netaffiliation'] = $trackers['netaffiliation']['active'];
+        $helper->fields_value['checkyourdata_netaffiliation_id'] = !empty($trackers['netaffiliation']['id'])?$trackers['netaffiliation']['id']:'';
+        */
+        $uEmail = Configuration::get('checkyourdata_user_email');
+        if ($uEmail != '') {
+            $helper->fields_value['checkyourdata_user_email'] = $uEmail;
+        } else {
+            // no user email, hiding field
+            array_shift($fields_form[0]['form']['input']);
+        }
+        
         return $helper->generateForm($fields_form);
     }
 
@@ -615,7 +1047,7 @@ class CheckYourData extends Module
             array(
                 'action_url' => $_SERVER['REQUEST_URI'],
                 'token' => Configuration::get('checkyourdata_token'),
-                'ua' => Configuration::get('checkyourdata_ua'),
+                'trackers' => Tools::jsonDecode(Configuration::get('checkyourdata_trackers'), true),
                 'submit_name' => 'submit'.$this->name,
             )
         );

@@ -19,17 +19,56 @@
 <form action="{$action_url|escape:'javascript':'UTF-8'}" method="post">
     <fieldset class="">
         <legend>
-            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Settings'}
+            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='General settings' mod='checkyourdata'}
         </legend>
-        <label>{l s='Access key to CheckYourData' mod="checkyourdata"}</label>
+        <label>{l s='Access key to CheckYourData' mod='checkyourdata'}</label>
         <div class="margin-form">
             <input name="checkyourdata_token" id="checkyourdata_token" value="{$token|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
         </div>
-        <label>{l s='Google UA tracking ID, to add universal tracking on your site.' mod="checkyourdata"}</label>
-        <div class="margin-form">
-            <input name="checkyourdata_ua" id="checkyourdata_ua" value="{$ua|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
-        </div>
-        <center><input type="submit" name="{$submit_name|escape:'htmlall':'UTF-8'}" value="{l s='Save'}" class="button" /></center>
     </fieldset>
+    <br/>
+    <fieldset class="">
+        <legend>
+            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Google Analytics' mod='checkyourdata'}
+        </legend>
+        <label>{l s='Tracker activation' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_trackers_ganalytics" id="checkyourdata_trackers_ganalytics" class="" type="checkbox"/>
+        </div>
+        <label>{l s='Google Analytics ID' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_ganalytics_ua" id="checkyourdata_ganalytics_ua" value="{$trackers['ganalytics']['ua']|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
+        </div>
+    </fieldset>
+    <br/>
+    <!--fieldset class="">
+        <legend>
+            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Lengow' mod='checkyourdata'}
+        </legend>
+        <label>{l s='Tracker activation' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_trackers_lengow" id="checkyourdata_trackers_lengow" class="" type="checkbox"/>
+        </div>
+        <label>{l s='ID Lengow' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_lengow_id" id="checkyourdata_lengow_id" value="{$trackers['lengow']['id']|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
+        </div>
+    </fieldset>
+    <br/>
+    <fieldset class="">
+        <legend>
+            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='NetAffiliation' mod='checkyourdata'}
+        </legend>
+        <label>{l s='Tracker activation' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_trackers_netaffiliation" id="checkyourdata_trackers_netaffiliation" class="" type="checkbox"/>
+        </div>
+        <label>{l s='ID NetAffiliation' mod='checkyourdata'}</label>
+        <div class="margin-form">
+            <input name="checkyourdata_netaffiliation_id" id="checkyourdata_netaffiliation_id" value="{$trackers['netaffiliation']['id']|escape:'htmlall':'UTF-8'}" class="" size="30" type="text">
+        </div>
+    </fieldset-->
+    <br/>
+    <center><input type="submit" name="{$submit_name|escape:'htmlall':'UTF-8'}" value="{l s='Save' mod='checkyourdata'}" class="button" /></center>
 </form>
 
