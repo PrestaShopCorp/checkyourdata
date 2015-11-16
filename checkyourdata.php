@@ -543,6 +543,15 @@ class CheckYourData extends Module
                 $modules [$pm['id_module']] = $p->displayName;
             }
         }
+
+        // get confirmation page url
+        $l = new Link();
+        $shopUrl = $this->context->shop->getBaseURL();
+        $confirmUrl = str_replace($shopUrl,'',$l->getPageLink('order-confirmation'));
+        
+        // get confirmation page title
+        $meta = MetaCore::getMetaByPage('order-confirmation',$default_lang);
+        $confirmTitle = $meta['title'];
         
         $data = array(
             'token' => $token,
@@ -551,6 +560,8 @@ class CheckYourData extends Module
                 'modules' => $modules,
                 'states' => $states,
                 'trackers'=> Configuration::get('checkyourdata_trackers'),
+                'confirm_url' => $confirmUrl,
+                'confirm_title' => $confirmTitle,
             ),
         );
         return CheckYourDataWSHelper::send(self::$dcUrl, $data);
