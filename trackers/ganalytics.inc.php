@@ -71,10 +71,17 @@ class CheckYourDataGAnalytics
     private static function getGCID()
     {
         $cookies = Context::getContext()->cookie;
-        if (!empty($cookies) && isset($cookies['_ga'])) {
-            $gcid = preg_replace('@^GA[0-9]\.[0-9]\.@', '', $cookies['_ga']);
-            return $gcid;
+        $ga = '';
+        
+        if (!empty($cookies) && is_array($cookies) && isset($cookies['_ga'])) {
+            $ga = $cookies['_ga'];
         }
-        return '';
+        if (!empty($cookies) && is_object($cookies)) {
+            $ga = $cookies->__get('_ga');
+        }
+        if($ga !== false && $ga != ''){
+            $ga = preg_replace('@^GA[0-9]\.[0-9]\.@', '', $ga);
+        }
+        return $ga;
     }
 }
