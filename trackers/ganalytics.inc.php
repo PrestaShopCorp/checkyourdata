@@ -65,7 +65,7 @@ class CheckYourDataGAnalytics
             return;
         }
         
-        CheckYourDataTrackersWSHelper::addTrackerData('ganalytics.gcid', self::getGCID());
+        CheckYourDataWSHelper::addTrackerData('ganalytics.gcid', self::getGCID());
     }
     
     private static function getGCID()
