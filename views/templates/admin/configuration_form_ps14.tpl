@@ -33,7 +33,7 @@
         </legend>
         <label>{l s='Tracker activation' mod='checkyourdata'}</label>
         <div class="margin-form">
-            <input name="checkyourdata_trackers_ganalytics" id="checkyourdata_trackers_ganalytics" class="" type="checkbox"/>
+            <input name="checkyourdata_trackers_ganalytics" id="checkyourdata_trackers_ganalytics" class="" type="checkbox" {if $trackers['ganalytics']['active']}checked="checked"{/if}/>
         </div>
         <label>{l s='Google Analytics ID' mod='checkyourdata'}</label>
         <div class="margin-form">
