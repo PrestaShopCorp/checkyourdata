@@ -29,11 +29,11 @@
     <div class="row">
         <div class="col-md-6">
             <p><strong>{l s='What we offer:' mod='checkyourdata'}</strong></p>
-            <p>{l s='Analytics provide 100% reliable and sales data exploitable.' mod='checkyourdata'}</p>
+            <p>{l s='Analytics provide 100 percent reliable and sales data exploitable.' mod='checkyourdata'}</p>
             <p>{l s='Allow to measure your real ROI your marketing investment' mod='checkyourdata'}</p>
             <p><strong>{l s='Benefits:' mod='checkyourdata'}</strong></p>
             <ul>
-                <li>{l s='100% reliable data: you do not see more gap between your backoffice sales data and Google Analytics' mod='checkyourdata'}</li>
+                <li>{l s='100 percent reliable data: you do not see more gap between your backoffice sales data and Google Analytics' mod='checkyourdata'}</li>
                 <li>{l s='Automatic setting Advanced Analytics (payment module, enhanced ecommerce)' mod='checkyourdata'}</li>
                 <li>{l s='Ability to trace Analytics cancellations, partial payments and payment by check or Transfer via your customer interface' mod='checkyourdata'}</li>
                 <li>{l s='Flexible prices according to your transaction volume, from € 15 / month for 100 monthly transactions' mod='checkyourdata'}</li>
@@ -53,7 +53,7 @@
             <img class="center-block" src="{$module_dir|htmlspecialchars}views/img/brain.png" width="80" height="80"/><br/>
             <p>
                 <strong>{l s='Peace of mind' mod='checkyourdata'}</strong><br/>
-                {l s='Base your strategy on 100% reliable data' mod='checkyourdata'}
+                {l s='Base your strategy on 100 percent reliable data' mod='checkyourdata'}
             </p>
         </div>
         <div class="col-md-3 text-center">
