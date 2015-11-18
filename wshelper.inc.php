@@ -96,9 +96,14 @@ class CheckYourDataWSHelper
         if ($ret != null) {
             Configuration::updateValue('checkyourdata_last_errors', implode(', ', $ret['errors']));
         }
+        // date demo
+        $demoEnd = Configuration::get('checkyourdata_demo_end');
         if (!empty($ret['data']['demoEnd'])) {
-            Configuration::updateValue('checkyourdata_demo_end', $ret['data']['demoEnd']);
+            $demoEnd = $ret['data']['demoEnd'];
+        } else if($demoEnd != '' && $demoEnd != false){
+            $demoEnd = '';
         }
+        Configuration::updateValue('checkyourdata_demo_end', $demoEnd);
         
         return $ret;
     }

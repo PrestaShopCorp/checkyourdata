@@ -2,7 +2,7 @@
 <module>
     <name>checkyourdata</name>
     <displayName><![CDATA[Analytics e-commerce Optimisation - Check Your Data]]></displayName>
-    <version><![CDATA[1.2.4]]></version>
+    <version><![CDATA[1.2.5]]></version>
     <description><![CDATA[Specifically postpones transactions in GoogleAnalytics.]]></description>
     <author><![CDATA[Check Your Data - http://www.checkyourdata.net]]></author>
     <tab><![CDATA[analytics_stats]]></tab>
