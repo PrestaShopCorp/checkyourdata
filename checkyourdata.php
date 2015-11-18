@@ -67,8 +67,8 @@ class CheckYourData extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Analytics e-commerce Optimisation - Check Your Data');
-        $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.');
+        $this->displayName = $this->l('Check Your Data - Analytics reports 100 percent reliable');
+        $this->description = $this->l('Discover the real return on your marketing investments: collect 100 percent of your sales data in Google Analytics to get the most of your reports with clean, accurate and reliable data.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
