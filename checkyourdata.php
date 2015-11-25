@@ -47,7 +47,7 @@ class CheckYourData extends Module
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
         
-        $this->version = '1.2.4';
+        $this->version = '1.2.5';
 
         $this->author = 'Check Your Data - http://www.checkyourdata.net';
         
@@ -67,8 +67,8 @@ class CheckYourData extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Analytics e-commerce Optimisation - Check Your Data');
-        $this->description = $this->l('Specifically postpones transactions in GoogleAnalytics.');
+        $this->displayName = $this->l('Check Your Data - Analytics reports 100 percent reliable');
+        $this->description = $this->l('Discover the real return on your marketing investments: collect 100 percent of your sales data in Google Analytics to get the most of your reports with clean, accurate and reliable data.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
@@ -546,7 +546,7 @@ class CheckYourData extends Module
 
         // get confirmation page url
         $l = new Link();
-        $shopUrl = $this->context->shop->getBaseURL();
+        $shopUrl = $this->getShopUrl();
         $confirmUrl = str_replace($shopUrl,'',$l->getPageLink('order-confirmation'));
         
         // get confirmation page title
@@ -591,7 +591,7 @@ class CheckYourData extends Module
         $data = array(
             'action' => 'createAccount',
             'data' => array(
-                'shopUrl'=> $this->context->shop->getBaseURL(),
+                'shopUrl'=> $this->getShopUrl(),
                 'email'=> $email,
                 'lang' => $lang->iso_code,
                 'modules' => $modules,
@@ -841,7 +841,7 @@ class CheckYourData extends Module
 
         // Load current value
         $helper->fields_value['checkyourdata_token'] = '';
-        $helper->fields_value['checkyourdata_signin_url'] = $this->context->shop->getBaseURL();
+        $helper->fields_value['checkyourdata_signin_url'] = $this->getShopUrl();
         $userEmail = (string) Tools::getValue('checkyourdata_signin_email');
         if ($userEmail == '') {
             $helper->fields_value['checkyourdata_signin_email'] = $this->context->employee->email;
@@ -1057,6 +1057,12 @@ class CheckYourData extends Module
     /**
      * Aliases for PS1.4 hooks
      */
+    public function getShopUrl(){
+        if (_PS_VERSION_ < '1.5.0.0') {
+            return $this->context->link->getPageLink('',true);
+        }
+        return $this->context->shop->getBaseURL();
+    }
     public function hookCancelProduct($params)
     {
         // TODO : PS1.4 refund

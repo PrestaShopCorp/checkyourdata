@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
     <name>checkyourdata</name>
-    <displayName><![CDATA[Analytics e-commerce Optimisation - Check Your Data]]></displayName>
-    <version><![CDATA[1.2.4]]></version>
-    <description><![CDATA[Specifically postpones transactions in GoogleAnalytics.]]></description>
+    <displayName><![CDATA[Check Your Data - Analytics reports 100 percent reliable]]></displayName>
+    <version><![CDATA[1.2.5]]></version>
+    <description><![CDATA[Discover the real return on your marketing investments: collect 100 percent of your sales data in Google Analytics to get the most of your reports with clean, accurate and reliable data.]]></description>
     <author><![CDATA[Check Your Data - http://www.checkyourdata.net]]></author>
     <tab><![CDATA[analytics_stats]]></tab>
     <confirmUninstall>Are you sure you want to uninstall?</confirmUninstall>

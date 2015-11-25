@@ -20,12 +20,12 @@
     <legend><img src="../img/admin/unknown.gif" alt="" class="middle">{l s='Help' mod='checkyourdata'}</legend>
 
     <h3>{l s='What we offer:' mod='checkyourdata'}</h3>
-    <p>{l s='Analytics provide 100% reliable and sales data exploitable.' mod='checkyourdata'}</p>
+    <p>{l s='Analytics provide 100 percent reliable and sales data exploitable.' mod='checkyourdata'}</p>
     <p>{l s='Allow to measure your real ROI your marketing investment' mod='checkyourdata'}</p>
 
     <h3>{l s='Benefits:' mod='checkyourdata'}</h3>
     <ul>
-        <li>{l s='100% reliable data: you do not see more gap between your backoffice sales data and Google Analytics' mod='checkyourdata'}</li>
+        <li>{l s='100 percent reliable data: you do not see more gap between your backoffice sales data and Google Analytics' mod='checkyourdata'}</li>
         <li>{l s='Automatic setting Advanced Analytics (payment module, enhanced ecommerce)' mod='checkyourdata'}</li>
         <li>{l s='Ability to trace Analytics cancellations, partial payments and payment by check or Transfer via your customer interface' mod='checkyourdata'}</li>
         <li>{l s='Flexible prices according to your transaction volume, from € 15 / month for 100 monthly transactions' mod='checkyourdata'}</li>
@@ -34,7 +34,7 @@
     </ul>
 
     <h3>{l s='Peace of mind' mod='checkyourdata'}</h3>
-    <p>{l s='Base your strategy on 100% reliable data' mod='checkyourdata'}</p>
+    <p>{l s='Base your strategy on 100 percent reliable data' mod='checkyourdata'}</p>
     
     <h3>{l s='Easy installation' mod='checkyourdata'}</h3>
     <p>{l s='A simple and fast module install in 5 minutes' mod='checkyourdata'}</p>
