@@ -35,7 +35,7 @@ $_MODULE['<{checkyourdata}prestashop>checkyourdata_b1dd319c13c1252eaf01b71e5abcb
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_a6d6326b13343fe62724d3ca0bc7542e'] = 'Activation du tracker';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_977e5b2751a14fa9be639516d0f0d0be'] = 'Cochez pour utiliser le tracker';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_437418d1694e82fd5ff2260670467c02'] = 'Identifiant Google Analytics';
-$_MODULE['<{checkyourdata}prestashop>checkyourdata_8619ea4fd776107f085ad58da23d105f'] = 'Vous trouverez cette informations dans Admin > Propriété de votre compte Google Analytic';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_8619ea4fd776107f085ad58da23d105f'] = 'Vous trouverez cette informations dans Admin > Propriété de votre compte Google Analytics';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_2e5f397415cb4934eeecb457071e04c9'] = 'Identifiant Lengow';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_b72bfac16b66c8b91533af2005cc9dda'] = 'Identifiant Netaffiliation';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_630f6dc397fe74e52d5189e2c80f282b'] = 'Retour à la liste';

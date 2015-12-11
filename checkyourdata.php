@@ -914,7 +914,7 @@ class CheckYourData extends Module
                 
                 // GANALYTICS
                 array(
-                    'type'    => 'checkbox',
+                    'type'    => 'hidden',//checkbox
                     'label'   => $this->l('Tracker activation'),
                     //'desc'    => $this->l('Check to use tracker.'),
                     'name'    => 'checkyourdata_trackers',
@@ -1032,7 +1032,7 @@ class CheckYourData extends Module
             );
         }
         // GOOGLE
-        $helper->fields_value['checkyourdata_trackers_ganalytics'] = $trackers['ganalytics']['active'];
+        $helper->fields_value['checkyourdata_trackers_ganalytics'] = true;//$trackers['ganalytics']['active'];
         $helper->fields_value['checkyourdata_ganalytics_ua'] = !empty($trackers['ganalytics']['ua'])?$trackers['ganalytics']['ua']:'';
         // LENGOW
         /*$helper->fields_value['checkyourdata_trackers_lengow'] = $trackers['lengow']['active'];
