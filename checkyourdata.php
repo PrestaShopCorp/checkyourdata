@@ -611,40 +611,56 @@ class CheckYourData extends Module
         $output = '';
 
         if (Tools::isSubmit('submit' . $this->name)) {
-            $trackers = array('ganalytics'=>array(),'lengow'=>array(),'netaffiliation'=>array());
-            // TRACKERS
-            // Google
-            $trackers['ganalytics']['active'] = (string) Tools::getValue('checkyourdata_trackers_ganalytics') == 'on';
-            $trackers['ganalytics']['ua'] = (string) Tools::getValue('checkyourdata_ganalytics_ua');
-            // Lengow
-            $trackers['lengow']['active'] = (string) Tools::getValue('checkyourdata_trackers_lengow') == 'on';
-            $trackers['lengow']['id'] = (string) Tools::getValue('checkyourdata_lengow_id');
-            // NetAffiliation
-            $trackers['netaffiliation']['active'] = (string) Tools::getValue('checkyourdata_trackers_netaffiliation') == 'on';
-            $trackers['netaffiliation']['id'] = (string) Tools::getValue('checkyourdata_netaffiliation_id');
-            
-            // save trackers conf
-            Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
-            
-            // TOKEN
+            $isOk = true;
+            // validation
+            $ua = (string) Tools::getValue('checkyourdata_ganalytics_ua');
+            $ua = trim($ua);
+            if($ua != '' && !preg_match('@^UA-[0-9\-]+$@', $ua)){
+                $output .= $this->displayError($this->l('Invalid UA value'));
+                $isOk = false;
+            }
             $token = (string) Tools::getValue('checkyourdata_token');
-            if (empty($token) || !Validate::isGenericName($token)) {
-                // reset config data
-                Configuration::updateValue('checkyourdata_token', '');
-                Configuration::updateValue('checkyourdata_user_email', '');
-                Configuration::updateValue('checkyourdata_last_errors', '');
-                Configuration::updateValue('checkyourdata_demo_end', '');
-            } else {
-                // set token
-                Configuration::updateValue('checkyourdata_token', $token);
-                $output .= $this->displayConfirmation($this->l('Token updated'));
-                
-                // send params to APP if token set
-                $res = $this->sendShopParamsToApp($token);
-                if ($res['state'] == 'ok') {
-                    $output .= $this->displayConfirmation(
-                        sprintf($this->l('Configuration saved on %s'), 'https://'.self::$dcUrl)
-                    );
+            $token = trim($token);
+            if($token != '' && !preg_match('@^[a-f0-9]{32}$@', $token)){
+                $output .= $this->displayError($this->l('Invalid token value'));
+                $isOk = false;
+            }
+            
+            if($isOk){
+                $trackers = array('ganalytics'=>array(),'lengow'=>array(),'netaffiliation'=>array());
+                // TRACKERS
+                // Google
+                $trackers['ganalytics']['active'] = (string) Tools::getValue('checkyourdata_trackers_ganalytics') == 'on';
+                $trackers['ganalytics']['ua'] = $ua;
+                // Lengow
+                $trackers['lengow']['active'] = (string) Tools::getValue('checkyourdata_trackers_lengow') == 'on';
+                $trackers['lengow']['id'] = (string) Tools::getValue('checkyourdata_lengow_id');
+                // NetAffiliation
+                $trackers['netaffiliation']['active'] = (string) Tools::getValue('checkyourdata_trackers_netaffiliation') == 'on';
+                $trackers['netaffiliation']['id'] = (string) Tools::getValue('checkyourdata_netaffiliation_id');
+
+                // save trackers conf
+                Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
+
+                // TOKEN
+                if (empty($token) || !Validate::isGenericName($token)) {
+                    // reset config data
+                    Configuration::updateValue('checkyourdata_token', '');
+                    Configuration::updateValue('checkyourdata_user_email', '');
+                    Configuration::updateValue('checkyourdata_last_errors', '');
+                    Configuration::updateValue('checkyourdata_demo_end', '');
+                } else {
+                    // set token
+                    Configuration::updateValue('checkyourdata_token', $token);
+                    $output .= $this->displayConfirmation($this->l('Token updated'));
+
+                    // send params to APP if token set
+                    $res = $this->sendShopParamsToApp($token);
+                    if ($res['state'] == 'ok') {
+                        $output .= $this->displayConfirmation(
+                            sprintf($this->l('Configuration saved on %s'), 'https://'.self::$dcUrl)
+                        );
+                    }
                 }
             }
         } elseif (Tools::isSubmit('submit' . $this->name .'_signin')) {

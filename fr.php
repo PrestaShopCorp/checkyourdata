@@ -8,6 +8,8 @@ $_MODULE['<{checkyourdata}prestashop>checkyourdata_876f23178c29dc2552c0b48bf23cd
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_7db1f963ce59568f7ba1b496c71d1b96'] = 'Clé d\'accès à checkyourdata.net non configurée';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_4fb6f085ae057473b9d25a6ed48509e2'] = 'Démo finie. Vos données ne sont plus envoyées aux trackers. Veuillez compléter les informations de votre compte sur Check Your Data App.';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_e4ebfe6d8300aba995b0b8464cad40f7'] = 'Démo active. Vos données sont suivies jusqu\'au';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_8b4408261b59461a9468699a6cb856b3'] = 'Identifiant Google non valide';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_a62dcc922d311bf7eb91ef11305d3a1c'] = 'Clé d\'accès à checkyourdata.net invalide';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_974af0f85d5a3ee6a2fb39cafc45a372'] = 'Token mis à jour';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_0729def50ef60afe144c636cf65a41de'] = 'Configuration mise à jour sur %s';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_9df1e86e03e844f2420cca7f4bee30f4'] = 'L\'email saisi est invalide';
