@@ -562,6 +562,9 @@ class CheckYourData extends Module
                 'trackers'=> Configuration::get('checkyourdata_trackers'),
                 'confirm_url' => $confirmUrl,
                 'confirm_title' => $confirmTitle,
+                'cyd_module_version' => $this->version,
+                'shop_type' => 'prestashop',
+                'shop_version' => _PS_VERSION_,
             ),
         );
         return CheckYourDataWSHelper::send(self::$dcUrl, $data);
