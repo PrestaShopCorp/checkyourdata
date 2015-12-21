@@ -47,7 +47,7 @@ class CheckYourData extends Module
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
         
-        $this->version = '1.2.5';
+        $this->version = '1.2.6';
 
         $this->author = 'Check Your Data - http://www.checkyourdata.net';
         
