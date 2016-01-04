@@ -47,7 +47,7 @@ class CheckYourData extends Module
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
         
-        $this->version = '1.2.6';
+        $this->version = '1.2.7';
 
         $this->author = 'Check Your Data - http://www.checkyourdata.net';
         
@@ -331,7 +331,53 @@ class CheckYourData extends Module
             );
         }
 
+        $trData = CheckYourDataWSHelper::getTrackersData();
+        $res = $this->sendInitOrderToApp($cart->id, $trData);
+        
+        // errors
+        $toResend = Configuration::get('checkyourdata_carts_in_error');
+        if (!empty($toResend)) {
+            $toResend = Tools::jsonDecode($toResend, true);
+        } else {
+            $toResend = array();
+        }
+        if ($res['state'] != 'ok') {
+            // save cart to re send
+            // add current order
+            if (!isset($toResend[$cart->id])) {
+                $toResend[$cart->id] = CheckYourDataWSHelper::getTrackersData();
+                Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($toResend));
+            }
+            error_log('Checkyourdata WS Update Order error : '.implode("\n", $res['errors']));
+        } else {
+            // all ok
+            // remove current sent cart from carts in error if in
+            if(isset($toResend[$cart->id])){
+                unset($toResend[$cart->id]);
+            }
+            // try to resend others carts in error
+            $newToResend=array();
+            foreach ($toResend as $cid => $trData) {
+                if (empty($cid)) {
+                    continue;
+                }
+                $r = $this->sendInitOrderToApp($cid, $trData);
+                if ($r['state'] != 'ok') {
+                    // keep in resend array
+                    $newToResend[$cid] = $trData;
+                }
+            }
+            Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($newToResend));
+        }
+        
+        return $out;
+    }
+    public function sendInitOrderToApp($cartId, $trData)
+    {
+        $token = Configuration::get('checkyourdata_token');
+
         // preparation de l'appel vers APP pour initOrder
+        $cart = new Cart($cartId);
         
         // data to send
         // amounts
@@ -368,13 +414,7 @@ class CheckYourData extends Module
             ),
         );
         
-        $res = CheckYourDataWSHelper::send(self::$dcUrl, $data);
-        // errors
-        if ($res['state'] != 'ok') {
-            error_log('Checkyourdata WS Init Order error : '.implode("\n", $res['errors']));
-        }
-        
-        return $out;
+        return CheckYourDataWSHelper::send(self::$dcUrl, $data, $trData);
     }
     
     /**
@@ -409,7 +449,27 @@ class CheckYourData extends Module
             error_log('Checkyourdata WS Update Order error : '.implode("\n", $res['errors']));
         } else {
             // all ok
-            // try to resend old orders
+            $cartsToResend = Configuration::get('checkyourdata_carts_in_error');
+            if (!empty($cartsToResend)) {
+                $toResend = Tools::jsonDecode($cartsToResend, true);
+            } else {
+                $cartsToResend = array();
+            }
+            // try to resend old carts
+            $newCartsToResend=array();
+            foreach ($cartsToResend as $cid => $trData) {
+                if (empty($cid)) {
+                    continue;
+                }
+                $r = $this->sendInitOrderToApp($cid, $trData);
+                if ($r['state'] != 'ok') {
+                    // keep in resend array
+                    $newCartsToResend[$cid] = $trData;
+                }
+            }
+            Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($newCartsToResend));
+            
+            // and after carts, try to resend old orders
             $newToResend=array();
             foreach ($toResend as $oid) {
                 if (empty($oid)) {
@@ -612,7 +672,7 @@ class CheckYourData extends Module
     public function getContent()
     {
         $output = '';
-
+        
         if (Tools::isSubmit('submit' . $this->name)) {
             $isOk = true;
             // validation
@@ -633,7 +693,7 @@ class CheckYourData extends Module
                 $trackers = array('ganalytics'=>array(),'lengow'=>array(),'netaffiliation'=>array());
                 // TRACKERS
                 // Google
-                $trackers['ganalytics']['active'] = (string) Tools::getValue('checkyourdata_trackers_ganalytics') == 'on';
+                $trackers['ganalytics']['active'] = true;//(string) Tools::getValue('checkyourdata_trackers_ganalytics') == 'on';
                 $trackers['ganalytics']['ua'] = $ua;
                 // Lengow
                 $trackers['lengow']['active'] = (string) Tools::getValue('checkyourdata_trackers_lengow') == 'on';
@@ -707,7 +767,7 @@ class CheckYourData extends Module
                 Configuration::updateValue('checkyourdata_token', $token);
 
                 // save trackers conf
-                $trackers = array('ganalytics'=>array('active'=>false),'lengow'=>array('active'=>false),'netaffiliation'=>array('active'=>false));
+                $trackers = array('ganalytics'=>array('active'=>true),'lengow'=>array('active'=>false),'netaffiliation'=>array('active'=>false));
                 Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
                 
                 // send to app
@@ -718,8 +778,8 @@ class CheckYourData extends Module
                     );
                 }
             }
-            
         }
+        
         $errs = Configuration::get('checkyourdata_last_errors');
         if (!empty($errs)) {
             $output .= $this->displayError($errs);
@@ -920,12 +980,12 @@ class CheckYourData extends Module
                     'type'    => 'hidden',//checkbox
                     'label'   => $this->l('Tracker activation'),
                     //'desc'    => $this->l('Check to use tracker.'),
-                    'name'    => 'checkyourdata_trackers',
-                    'values'  => array(
+                    'name'    => 'checkyourdata_trackers_ganalytics',
+                    /*'values'  => array(
                         'query' => array(array('id'=>'ganalytics','label'=>$this->l('Check to use tracker.'))),
                         'id'    => 'id',
                         'name'  => 'label'
-                    ),
+                    ),*/
                     'tab' => 'ganalytics',
                 ),
                 array(

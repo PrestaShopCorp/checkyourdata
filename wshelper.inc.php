@@ -20,6 +20,10 @@
 class CheckYourDataWSHelper
 {
     private static $trackers_data=array();
+    public static function getTrackersData()
+    {
+        return self::$trackers_data;
+    }
     public static function addTrackerData($k, $v)
     {
         self::$trackers_data[$k] = $v;
@@ -59,10 +63,12 @@ class CheckYourDataWSHelper
      * @param type $data : data array
      * @return array : WS return JSON decoded
      */
-    public static function send($url, $data)
+    public static function send($url, $data, $trData=null)
     {
         // add data for trackers if not empty
-        if (!empty(self::$trackers_data)) {
+        if($trData != null){
+            $data['data']['trackers_data'] = $trData;
+        } else if (!empty(self::$trackers_data)) {
             $data['data']['trackers_data'] = self::$trackers_data;
         }
         
