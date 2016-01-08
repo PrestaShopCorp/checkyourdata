@@ -53,7 +53,7 @@ class CheckYourDataWSHelper
         
         return $retour;
     }
-    
+
     /**
      * WS call APP
      * @param type $data : data array

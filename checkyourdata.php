@@ -33,7 +33,7 @@ class CheckYourData extends Module
         if (! class_exists('CheckYourDataGAnalytics')) {
             include_once dirname(__FILE__).'/trackers/ganalytics.inc.php';
         }
-        
+
         // Environement configuration
         $host = $_SERVER['HTTP_HOST'];
         if (strpos($host, 'ribie.re')) {
@@ -41,9 +41,13 @@ class CheckYourData extends Module
             self::$dcUrl = 'app-preprod.checkyourdata.net/';
         } elseif (strpos($host, 'cyd.com') || strpos($host, 'dc.com')) {
             // LOCAL
-            self::$dcUrl = 'app.cyd.com/';
+            self::$dcUrl = 'app2.cyd.com/';
         }
-        
+
+        if (getenv('CYD_ENV') == 'dev'){
+            self::$dcUrl = getenv('CYD_APP').'/';
+        }
+
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
         
@@ -310,12 +314,13 @@ class CheckYourData extends Module
      */
     public function hookPaymentTop()
     {
+        $error = array();
         // get CYD token
         $token = Configuration::get('checkyourdata_token');
         if (empty($token)) {
             return '';
         }
-        
+
         $out = '';
         
         // get order (cart)
@@ -325,11 +330,11 @@ class CheckYourData extends Module
         $trackers = Tools::jsonDecode(Configuration::get('checkyourdata_trackers'), true);
         // ganalytics is activated ?
         if ($trackers['ganalytics']['active']) {
-            $this->trackerAction(
-                CheckYourDataGAnalytics::hookPaymentTop($trackers['ganalytics']['ua'], $cart),
-                $out
-            );
+            if (!CheckYourDataGAnalytics::addTrackerData($trackers['ganalytics']['ua'], $cart)){
+                $error[] = 'No_GCID';
+            };
         }
+
 
         // preparation de l'appel vers APP pour initOrder
         
@@ -367,13 +372,35 @@ class CheckYourData extends Module
                 'items' => Tools::jsonEncode($items),
             ),
         );
-        
-        $res = CheckYourDataWSHelper::send(self::$dcUrl, $data);
-        // errors
-        if ($res['state'] != 'ok') {
-            error_log('Checkyourdata WS Init Order error : '.implode("\n", $res['errors']));
+
+        if (count($error) == 0) {
+            $res = CheckYourDataWSHelper::send(self::$dcUrl, $data);
+
+            // errors
+            if ($res['state'] != 'ok') {
+                error_log('Checkyourdata WS Init Order error : '.implode("\n", $res['errors']));
+            }
+
+        }else{
+            if ($trackers['ganalytics']['active']) {
+                $enc = CheckYourDataWSHelper::encodeData($data);
+                // add JS vars
+                $this->trackerAction(
+                    array(
+                        'tpl'=> array(
+                            'file'=>'ganalytics/payment-top.tpl',
+                            'smarty'=> array(
+                                'url' => '//'.self::$dcUrl.'ws/',
+                                'data' => 'k='.$enc['key'].'&d='.$enc['data'],
+                            ),
+                        ),
+                    ),
+                    $out
+                );
+
+            }
         }
-        
+
         return $out;
     }
     
