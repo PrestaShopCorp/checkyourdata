@@ -24,7 +24,7 @@ class CheckYourDataGAnalytics
     {
         // verify module ganalytics present
         if ($cydUa != null) {
-            $gaUa = '';
+
             $ga = Module::getInstanceByName('ganalytics');
             if ($ga !== false && $ga->active) {
                 // get UA configured
@@ -40,25 +40,25 @@ class CheckYourDataGAnalytics
         }
         return '';
     }
-    
+
     public static function hookHeader($ua)
     {
         if (empty($ua)) {
             // no tracking if CYD UA not set
-            return;
+            return null;
         }
 
         $res = array(
-            'tpl'=> array(
-                'file'=>'ganalytics/header.tpl',
-                'smarty'=>array('ua' => $ua),
+            'tpl' => array(
+                'file' => 'ganalytics/header.tpl',
+                'smarty' => array('ua' => $ua),
             ),
         );
-        
+
         return $res;
     }
-    
-    public static function addTrackerData($ua, $cart)
+
+    public static function addTrackerData($ua)
     {
         if (empty($ua)) {
             // no tracking if CYD UA not set
@@ -72,11 +72,11 @@ class CheckYourDataGAnalytics
 
         return true;
     }
-    
+
     private static function getGCID()
     {
         $ga = filter_input(INPUT_COOKIE, '_ga');
-        if($ga !== false && $ga != ''){
+        if ($ga !== false && $ga != '') {
             $ga = preg_replace('@^GA[0-9]\.[0-9]\.@', '', $ga);
         }
         return $ga;

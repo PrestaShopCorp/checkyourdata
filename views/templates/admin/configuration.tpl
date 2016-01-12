@@ -41,37 +41,37 @@
                     {l s='A trusted partner: Check Your Data is PrestaShop Official Partner' mod='checkyourdata'}                </li>
             </ul>
 
-                    <img class="" src="{$module_dir|htmlspecialchars}views/img/ps_partner.jpg" align="right" width="100" height="100"/>
+                    <img class="" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/ps_partner.jpg" align="right" width="100" height="100"/>
         </div>
         <div class="col-md-6">
-            <img class="img-responsive" src="{$module_dir|htmlspecialchars}views/img/analytics.jpg"/>
+            <img class="img-responsive" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/analytics.jpg"/>
         </div>
     </div>
     <br/><br/>
     <div class="row">
         <div class="col-md-3 text-center">
-            <img class="center-block" src="{$module_dir|htmlspecialchars}views/img/brain.png" width="80" height="80"/><br/>
+            <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/brain.png" width="80" height="80"/><br/>
             <p>
                 <strong>{l s='Peace of mind' mod='checkyourdata'}</strong><br/>
                 {l s='Base your strategy on 100 percent reliable data' mod='checkyourdata'}
             </p>
         </div>
         <div class="col-md-3 text-center">
-            <img class="center-block" src="{$module_dir|htmlspecialchars}views/img/time.png" width="80" height="80"/><br/>
+            <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/time.png" width="80" height="80"/><br/>
             <p>
                 <strong>{l s='Easy installation' mod='checkyourdata'}</strong><br/>
                 {l s='A simple and fast module install in 5 minutes' mod='checkyourdata'}
             </p>
         </div>
         <div class="col-md-3 text-center">
-            <img class="center-block" src="{$module_dir|htmlspecialchars}views/img/config.png" width="80" height="80"/><br/>
+            <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/config.png" width="80" height="80"/><br/>
             <p>
                 <strong>{l s='Custom setting' mod='checkyourdata'}</strong><br/>
                 {l s='Took different needs into account in the configuring your account' mod='checkyourdata'}
             </p>
         </div>
         <div class="col-md-3 text-center">
-            <img class="center-block" src="{$module_dir|htmlspecialchars}views/img/support.png" width="80" height="80"/><br/>
+            <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/support.png" width="80" height="80"/><br/>
             <p>
                 <strong>{l s='Reactive support at your service' mod='checkyourdata'}</strong><br/>
                 {l s='We will reply in 48 hours' mod='checkyourdata'}
