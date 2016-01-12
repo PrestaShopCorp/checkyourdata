@@ -58,14 +58,19 @@ class CheckYourDataGAnalytics
         return $res;
     }
     
-    public static function hookPaymentTop($ua, $cart)
+    public static function addTrackerData($ua, $cart)
     {
         if (empty($ua)) {
             // no tracking if CYD UA not set
             return;
         }
-        
-        CheckYourDataWSHelper::addTrackerData('ganalytics.gcid', self::getGCID());
+        $gcid = self::getGCID();
+        if (!$gcid) {
+            return false;
+        }
+        CheckYourDataWSHelper::addTrackerData('ganalytics.gcid', $gcid);
+
+        return true;
     }
     
     private static function getGCID()
