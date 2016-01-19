@@ -143,6 +143,7 @@ class CheckYourData extends Module
             $ko = $ko || !$this->unregisterHook('actionObjectOrderDetailUpdateAfter');
             $ko = $ko || !$this->unregisterHook('displayAdminOrderContentOrder');
         }
+        
         $ko = $ko || !parent::uninstall();
 
         if (!$ko) {
@@ -955,12 +956,6 @@ class CheckYourData extends Module
             'legend' => array(
                 'title' => $this->l('Settings'),
             ),
-            'tabs' => array(
-                'global' => $this->l('Check Your Data'),
-                'ganalytics' => $this->l('Google Analytics'),
-                /*'lengow' => $this->l('Lengow'),
-                'netaffiliation' => $this->l('Netaffiliation'),*/
-            ),
             'input' => array(
                 array(
                     'type' => 'text',
@@ -969,7 +964,6 @@ class CheckYourData extends Module
                     'size' => 20,
                     'required' => true,
                     'disabled' => true,
-                    'tab' => 'global',
                 ),
                 array(
                     'type' => 'text',
@@ -978,21 +972,23 @@ class CheckYourData extends Module
                     'size' => 20,
                     'required' => true,
                     'hint' => $this->l('Available on http://app.checkyourdata.net'),
-                    'tab' => 'global',
                 ),
-
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+                'class' => 'button'
+            )
+        );
+        $fields_form[1]['form'] = array(
+            'legend' => array(
+                'title' => $this->l('Setting Google Analytics'),
+            ),
+            'input' => array(
                 // GANALYTICS
                 array(
                     'type' => 'hidden',//checkbox
                     'label' => $this->l('Tracker activation'),
-                    //'desc'    => $this->l('Check to use tracker.'),
                     'name' => 'checkyourdata_trackers_ganalytics',
-                    /*'values'  => array(
-                        'query' => array(array('id'=>'ganalytics','label'=>$this->l('Check to use tracker.'))),
-                        'id'    => 'id',
-                        'name'  => 'label'
-                    ),*/
-                    'tab' => 'ganalytics',
                 ),
                 array(
                     'type' => 'text',
@@ -1001,7 +997,6 @@ class CheckYourData extends Module
                     'size' => 20,
                     'required' => false,
                     'hint' => $this->l('You will find this information on Admin > Google Analytics Account Properties'),
-                    'tab' => 'ganalytics',
                 ),
 
                 // LENGOW
@@ -1047,7 +1042,6 @@ class CheckYourData extends Module
                     'required' => false,
                     'tab' => 'netaffiliation',
                 ),*/
-
             ),
             'submit' => array(
                 'title' => $this->l('Save'),

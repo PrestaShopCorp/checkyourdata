@@ -29,11 +29,11 @@
     <br/>
     <fieldset class="">
         <legend>
-            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Google Analytics' mod='checkyourdata'}
+            <img src="../img/admin/cog.gif" alt="" class="middle" />{l s='Setting Google Analytics' mod='checkyourdata'}
         </legend>
-        <label>{l s='Tracker activation' mod='checkyourdata'}</label>
+        {*<label>{l s='Tracker activation' mod='checkyourdata'}</label>*}
         <div class="margin-form">
-            <input name="checkyourdata_trackers_ganalytics" id="checkyourdata_trackers_ganalytics" class="" type="checkbox" {if $trackers['ganalytics']['active']}checked="checked"{/if}/>
+            <input name="checkyourdata_trackers_ganalytics" id="checkyourdata_trackers_ganalytics" class="" type="hidden" value="true" checked="checked"/>
         </div>
         <label>{l s='Google Analytics ID' mod='checkyourdata'}</label>
         <div class="margin-form">

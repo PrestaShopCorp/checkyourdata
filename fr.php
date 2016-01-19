@@ -39,8 +39,10 @@ $_MODULE['<{checkyourdata}prestashop>checkyourdata_8619ea4fd776107f085ad58da23d1
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_2e5f397415cb4934eeecb457071e04c9'] = 'Identifiant Lengow';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_b72bfac16b66c8b91533af2005cc9dda'] = 'Identifiant Netaffiliation';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_630f6dc397fe74e52d5189e2c80f282b'] = 'Retour à la liste';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_f134201a7efae07385fa010582c6bb91'] = 'Configuration Google Analytics';
 $_MODULE['<{checkyourdata}prestashop>ganalytics.inc_d68dddccfd78dafbfd8b850736e1f02c'] = 'Votre identifiant Google Analytics est déjà configuré (dans le module ganalytics). Le tracking risque d\'être dupliqué sur Google Analytics. Vous devriez désactiver le module ganalytics, ou bien définir un nouvel identifiant Google Analytics dans le module Check Your Data.';
 $_MODULE['<{checkyourdata}prestashop>configuration_form_ps14_de62775a71fc2bf7a13d7530ae24a7ed'] = 'Configuration générale';
+$_MODULE['<{checkyourdata}prestashop>configuration_form_ps14_f134201a7efae07385fa010582c6bb91'] = 'Configuration Google Analytics';
 $_MODULE['<{checkyourdata}prestashop>configuration_form_ps14_9e34fa78a4be3d1907a1dbd9215c8d27'] = 'Clé d\'accès à Checkyourdata';
 $_MODULE['<{checkyourdata}prestashop>configuration_form_ps14_d86cf69a8b82547a94ca3f6a307cf9a6'] = 'Google Analytics';
 $_MODULE['<{checkyourdata}prestashop>configuration_form_ps14_a6d6326b13343fe62724d3ca0bc7542e'] = 'Activation du tracker';
@@ -87,3 +89,4 @@ $_MODULE['<{checkyourdata}prestashop>configuration_c53b85c9b731dda2adea571deb402
 $_MODULE['<{checkyourdata}prestashop>configuration_5e037577d7c0c8b13ccbfc0efb12df71'] = 'Support réactif à votre écoute';
 $_MODULE['<{checkyourdata}prestashop>configuration_f503bc7de3f8032bf80a642579e25a00'] = 'Nous vous répondons en 48H';
 $_MODULE['<{checkyourdata}prestashop>configuration_c9e81ae385fa3c1b7c4ddb48c26bb814'] = 'Appelez nous au : ​05 32 09 12 30';
+
