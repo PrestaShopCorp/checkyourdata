@@ -321,7 +321,6 @@ class CheckYourData extends Module
         if (empty($token)) {
             return '';
         }
-
         $out = '';
 
         // get order (cart)
@@ -343,39 +342,13 @@ class CheckYourData extends Module
             $res = $this->sendInitOrderToApp($cart->id, $trData);
 
             // errors
-            $toResend = Configuration::get('checkyourdata_carts_in_error');
-            if (!empty($toResend)) {
-                $toResend = Tools::jsonDecode($toResend, true);
-            } else {
-                $toResend = array();
-            }
             if ($res['state'] != 'ok') {
                 // save cart to re send
-                // add current order
-                if (!isset($toResend[$cart->id])) {
-                    $toResend[$cart->id] = CheckYourDataWSHelper::getTrackersData();
-                    Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($toResend));
-                }
+                $this->addCartInError($cart->id);
                 error_log('Checkyourdata WS Update Order error : ' . implode("\n", $res['errors']));
             } else {
-                // all ok
-                // remove current sent cart from carts in error if in
-                if (isset($toResend[$cart->id])) {
-                    unset($toResend[$cart->id]);
-                }
-                // try to resend others carts in error
-                $newToResend = array();
-                foreach ($toResend as $cid => $trData) {
-                    if (empty($cid)) {
-                        continue;
-                    }
-                    $r = $this->sendInitOrderToApp($cid, $trData);
-                    if ($r['state'] != 'ok') {
-                        // keep in resend array
-                        $newToResend[$cid] = $trData;
-                    }
-                }
-                Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($newToResend));
+                // APP CYD is OK
+                $this->sendCartsInError($cart->id);
             }
         } else {
             if ($trackers['ganalytics']['active']) {
@@ -425,56 +398,18 @@ class CheckYourData extends Module
         // send to APP
         $res = $this->sendOrderToApp($params['id_order'], $params['newOrderStatus']->id);
 
-        // errors
-        $toResend = Configuration::get('checkyourdata_orders_in_error');
-        if (!empty($toResend)) {
-            $toResend = Tools::jsonDecode($toResend, true);
-        } else {
-            $toResend = array();
-        }
+
         if ($res['state'] != 'ok') {
             // save order to re send
-            // add current order
-            if (!in_array($params['id_order'], $toResend)) {
-                $toResend[] = $params['id_order'];
-                Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($toResend));
-            }
+            $this->addOrderInError($params['id_order']);
             error_log('Checkyourdata WS Update Order error : ' . implode("\n", $res['errors']));
         } else {
             // all ok
-            $cartsToResend = Configuration::get('checkyourdata_carts_in_error');
-            if (!empty($cartsToResend)) {
-                $toResend = Tools::jsonDecode($cartsToResend, true);
-            } else {
-                $cartsToResend = array();
-            }
-            // try to resend old carts
-            $newCartsToResend = array();
-            foreach ($cartsToResend as $cid => $trData) {
-                if (empty($cid)) {
-                    continue;
-                }
-                $r = $this->sendInitOrderToApp($cid, $trData);
-                if ($r['state'] != 'ok') {
-                    // keep in resend array
-                    $newCartsToResend[$cid] = $trData;
-                }
-            }
-            Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($newCartsToResend));
+            //try send blocked carts
+            $this->sendCartsInError();
 
-            // and after carts, try to resend old orders
-            $newToResend = array();
-            foreach ($toResend as $oid) {
-                if (empty($oid)) {
-                    continue;
-                }
-                $r = $this->sendOrderToApp($oid);
-                if ($r['state'] != 'ok') {
-                    // keep in resend array
-                    $newToResend[] = $oid;
-                }
-            }
-            Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($newToResend));
+            //try send blocked orderb
+            $this->sendOrdersInError();
         }
     }
 
@@ -664,6 +599,7 @@ class CheckYourData extends Module
      */
     public function getContent()
     {
+
         $output = '';
 
         if (Tools::isSubmit('submit' . $this->name)) {
@@ -842,6 +778,7 @@ class CheckYourData extends Module
     {
         // Get default language
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+
 
         // Init Fields form array
         $fields_form = array();
@@ -1237,4 +1174,101 @@ class CheckYourData extends Module
         );
         return $data;
     }
+
+
+    /**
+     * @param null $cartId current cartId to unset
+     * @return array|null
+     */
+    private function sendCartsInError($cartId = null)
+    {
+        $cartsToResend = Configuration::get('checkyourdata_carts_in_error');
+        if (!empty($cartsToResend)) {
+            $aCartsToResend = Tools::jsonDecode($cartsToResend, true);
+            if (count($aCartsToResend) > 0) {
+
+                // remove current sent cart from carts in error if in
+                if ($cartId && isset($aCartsToResend[$cartId])) {
+                    unset($aCartsToResend[$cartId]);
+                }
+                // try to resend old carts
+                $newCartsToResend = array();
+                foreach ($aCartsToResend as $cid => $trData) {
+                    if (empty($cid)) {
+                        continue;
+                    }
+                    $r = $this->sendInitOrderToApp($cid, $trData);
+                    if ($r['state'] != 'ok') {
+                        // keep in resend array
+                        $newCartsToResend[$cid] = $trData;
+                    }
+                }
+                Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($newCartsToResend));
+                return $r;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param $orderId
+     */
+    private function addOrderInError($orderId)
+    {
+        $ordersInError = Configuration::get('checkyourdata_orders_in_error');
+        if (!empty($ordersInError)) {
+            $ordersInError = Tools::jsonDecode($ordersInError, true);
+        } else {
+            $ordersInError = array();
+        }
+        if (!in_array($orderId, $ordersInError)) {
+            $ordersInError[] = $orderId;
+            Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($ordersInError));
+        }
+    }
+
+    private function sendOrdersInError()
+    {
+        $toResend = Configuration::get('checkyourdata_orders_in_error');
+        if (!empty($toResend)) {
+            $toResend = Tools::jsonDecode($toResend, true);
+        } else {
+            $toResend = array();
+        }
+        // and after carts, try to resend old orders
+        $newToResend = array();
+        foreach ($toResend as $orderId) {
+            if (empty($orderId)) {
+                continue;
+            }
+            $r = $this->sendOrderToApp($orderId);
+            if ($r['state'] != 'ok') {
+                // keep in resend array
+                $newToResend[] = $orderId;
+            }
+        }
+        Configuration::updateValue('checkyourdata_orders_in_error', Tools::jsonEncode($newToResend));
+    }
+
+    /**
+     * @param $cartId
+     */
+    private function addCartInError($cartId)
+    {
+        $toResend = Configuration::get('checkyourdata_carts_in_error');
+        if (!empty($toResend)) {
+            $toResend = Tools::jsonDecode($toResend, true);
+        } else {
+            $toResend = array();
+        }
+        if (!isset($toResend[$cartId])) {
+            $toResend[$cartId] = CheckYourDataWSHelper::getTrackersData();
+            Configuration::updateValue('checkyourdata_carts_in_error', Tools::jsonEncode($toResend));
+        }
+    }
+
+    /**
+     * Aliases for PS1.4 hooks
+     */
+
 }

@@ -85,6 +85,7 @@ class CheckYourDataWSHelper
             curl_setopt($c, CURLOPT_POST, true);
             curl_setopt($c, CURLOPT_POSTFIELDS, $dat);
             curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($c, CURLOPT_TIMEOUT, 15);
             $res = curl_exec($c);
             curl_close($c);
         } else {
