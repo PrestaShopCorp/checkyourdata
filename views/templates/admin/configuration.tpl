@@ -44,7 +44,7 @@
                     <img class="" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/ps_partner.jpg" align="right" width="100" height="100"/>
         </div>
         <div class="col-md-6">
-            <img class="img-responsive" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/analytics.jpg"/>
+            <img class="img-responsive" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/{$img_analytic_url|escape:'htmlall':'UTF-8'}"/>
         </div>
     </div>
     <br/><br/>

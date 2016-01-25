@@ -58,13 +58,13 @@ class CheckYourData extends Module
         // warnings in admin
         $this->need_instance = 1;
 
-        if (_PS_VERSION_ >= '1.5.6.2') {
+        if (version_compare(_PS_VERSION_,'1.5.6.2','>=')) {
             // BUG prestashop on v1.5.4.1 => compliancy not used properly
             // BUG fixed on v1.5.6.2.
             $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
         }
 
-        if (_PS_VERSION_ >= '1.6.0.0') {
+        if (version_compare(_PS_VERSION_,'1.6','>=')) {
             // from PS1.6, theme bootstrap
             $this->bootstrap = true;
         }
@@ -93,7 +93,7 @@ class CheckYourData extends Module
         }
 
 
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             /** Backward compatibility */
             require(_PS_MODULE_DIR_ . $this->name . '/backward_compatibility/backward.php');
         }
@@ -127,16 +127,16 @@ class CheckYourData extends Module
         $ko = $ko || !$this->unregisterHook('paymentTop');
         $ko = $ko || !$this->unregisterHook('updateOrderStatus');
 
-        if (_PS_VERSION_ >= '1.5.0.0' && _PS_VERSION_ < '1.6.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','>=') && version_compare(_PS_VERSION_,'1.6','<')) {
             $ko = $ko || !$this->unregisterHook('displayMobileHeader');
         }
 
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             // REFUND
             $ko = $ko || !$this->unregisterHook('cancelProduct');
         } else {
             // REFUND
-            if (_PS_VERSION_ < '1.6.0.0') {
+            if (version_compare(_PS_VERSION_,'1.6','<')) {
                 $ko = $ko || !$this->unregisterHook('displayAdminOrder');
             }
 
@@ -170,16 +170,16 @@ class CheckYourData extends Module
         $ko = $ko || !$this->registerHook('paymentTop');
         $ko = $ko || !$this->registerHook('updateOrderStatus');
 
-        if (_PS_VERSION_ >= '1.5.0.0' && _PS_VERSION_ < '1.6.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','>=') && version_compare(_PS_VERSION_,'1.6','<')) {
             $ko = $ko || !$this->registerHook('displayMobileHeader');
         }
 
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             // REFUND
             $ko = $ko || !$this->registerHook('cancelProduct');
         } else {
             // REFUND
-            if (_PS_VERSION_ < '1.6.0.0') {
+            if (version_compare(_PS_VERSION_,'1.6','<')) {
                 $ko = $ko || !$this->registerHook('displayAdminOrder');
             }
 
@@ -289,7 +289,7 @@ class CheckYourData extends Module
         }
         $out = '';
 
-        // sur toutes les pages, sauf sur la confirmation
+        // All pages, except confirmation
         $controller = $this->context->controller->php_self;
         if ($controller == 'order-confirmation') {
             return;
@@ -664,10 +664,9 @@ class CheckYourData extends Module
             // token
             $token = (string)Tools::getValue('checkyourdata_token');
             if (empty($token)) {
-                // account creation
-                // user email
+                // create account
+
                 $userEmail = (string)Tools::getValue('checkyourdata_signin_email');
-                // tos
                 $tos = (string)Tools::getValue('checkyourdata_tos_check');
 
                 // form validation
@@ -723,7 +722,7 @@ class CheckYourData extends Module
         if (!empty($errs)) {
             $output .= $this->displayError($errs);
         }
-// Warning if demo
+        // Warning if demo
         $demoEnd = Configuration::get('checkyourdata_demo_end');
         if (!empty($demoEnd)) {
             $dt = new DateTime();
@@ -736,7 +735,7 @@ class CheckYourData extends Module
         }
 
         $token = Configuration::get('checkyourdata_token');
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             // HelperForm not defined in PS 1.4
             $output .= $this->displayFormPs14();
         } else {
@@ -747,7 +746,7 @@ class CheckYourData extends Module
             }
         }
 
-// header image
+        // header image
         if (empty($token)) {
             $img = 'no_account.png';
             $link = '#fieldset_0';
@@ -757,14 +756,21 @@ class CheckYourData extends Module
             $link = '//' . self::$dcUrl . '?refer=PRESTA';
         }
 
+        if ($this->context->language->iso_code == 'fr'){
+            $imgAnalyticUrl = 'analytics.jpg';
+        }else{
+            $imgAnalyticUrl = 'analytics_en.jpg';
+        }
+
         $this->context->smarty->assign(
             array(
                 'img_url' => '//' . self::$dcUrl . 'img/' . $img,
                 'link_url' => $link,
+                'img_analytic_url' => $imgAnalyticUrl,
             )
         );
 
-        if (_PS_VERSION_ < '1.6.0.0') {
+        if (version_compare(_PS_VERSION_,'1.6','<')) {
             // no bootstrap
             $output = $this->display(__FILE__, 'views/templates/admin/configuration_ps15.tpl') . $output;
         } else {
@@ -1082,7 +1088,7 @@ class CheckYourData extends Module
      */
     public function getShopUrl()
     {
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             return $this->context->link->getPageLink('', true);
         }
         return $this->context->shop->getBaseURL();
@@ -1098,7 +1104,7 @@ class CheckYourData extends Module
      */
     private function getShippingTotal($order)
     {
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             return $order->total_shipping;
         } else {
             $shipping = $order->getShippingTaxesBreakdown();
@@ -1111,7 +1117,7 @@ class CheckYourData extends Module
 
     private function getProductDefaultCategory($prod)
     {
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             $p = new Product($prod['product_id']);
             return $p->id_category_default;
         }
@@ -1120,7 +1126,7 @@ class CheckYourData extends Module
 
     private function getProductReference($prod)
     {
-        if (_PS_VERSION_ < '1.5.0.0') {
+        if (version_compare(_PS_VERSION_,'1.5','<')) {
             $p = new Product($prod['product_id']);
             return $p->reference;
         }
@@ -1128,6 +1134,7 @@ class CheckYourData extends Module
     }
 
     /**
+     * Prepare for sending
      * @param $cartId
      * @return array
      */
@@ -1135,10 +1142,8 @@ class CheckYourData extends Module
     {
         $token = Configuration::get('checkyourdata_token');
 
-        // preparation de l'appel vers APP pour initOrder
         $cart = new Cart($cartId);
 
-        // data to send
         // amounts
         $trans = array();
         $totalWithoutTaxes = $cart->getOrderTotal(false, Cart::ONLY_PRODUCTS);

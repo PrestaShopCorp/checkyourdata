@@ -23,7 +23,7 @@
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 {/literal}
-// avec name pour éviter tout conflit avec d'autres trackings (notamment pas universal)
+// add name to avoid conflicts with other trackings (especially not universal)
 ga('create', '{$ua|escape:'htmlall':'UTF-8'}', 'auto', {literal}{'name':'checkyourdata_ga'}{/literal});
 ga('checkyourdata_ga.require', 'displayfeatures');
 ga('checkyourdata_ga.require', 'ec');
