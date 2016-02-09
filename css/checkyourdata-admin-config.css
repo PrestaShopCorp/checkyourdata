@@ -1,0 +1,120 @@
+
+.checkyourdata .col-md-6.right-block {
+    padding-top: 80px;
+    float: right;
+    background: #ffffff url("../views/img/bo_background-right.png") no-repeat top left;
+    background-size: 100%;
+    height: 700px;
+}
+
+.checkyourdata .col-md-6.text-center.left-block {
+    padding: 0 4em;
+}
+
+.row.checkyourdata_logo {
+
+}
+
+.checkyourdata h2 {
+    margin-bottom: 25px;
+}
+
+.checkyourdata h4 {
+    margin-bottom: 25px;
+}
+.checkyourdata .right-block h4 {
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+
+
+.checkyourdata p {
+    margin-bottom: 25px;
+}
+
+.checkyourdata div.form-group {
+    padding: 1% 8% 1% 8%;
+}
+
+.checkyourdata .row.exist-token {
+    margin-top: 70%;
+}
+
+@media (max-width: 990px) {
+    .checkyourdata .row.exist-token {
+        margin-top: 15px;
+    }
+    .checkyourdata .col-md-6.right-block {
+        float: none;
+    }
+
+}
+@media (max-width: 1100px) {
+    .checkyourdata .col-md-6.right-block {
+        padding-top: 20px;
+    }
+}
+
+@media (max-width: 1120px) {
+    .checkyourdata .signin-box{
+        margin-bottom: 5px !important;
+    }
+
+
+    .checkyourdata .row.exist-token{
+        margin-top: 0px;
+    }
+}
+
+.checkyourdata {
+    background-color: white;
+}
+
+/*.signin-box {*/
+    /*margin-top: 20%;*/
+/*}*/
+
+.signin-box .panel-body {
+    padding: 0;
+}
+
+.signin-box .panel-body p {
+    margin-bottom: 0px;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.panel-transparent {
+    background: rgba(249, 249, 249, 0.9) !important;
+}
+
+input#checkyourdata_ganalytics_ua , input#checkyourdata_token {
+    border: 1px solid #72C279;
+}
+
+.login-box .panel-body {
+    padding: 0;
+}
+
+.login-box .panel-body p {
+    margin-bottom: 10px;
+}
+
+.left-block p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.left-block .row p {
+    padding: 0 10px 0 10px;
+    font-size: 1em;
+}
+
+.google-partner{
+    margin-top: 10px;
+}
+
+input#checkyourdata_email{
+    margin-bottom: 5px;
+}
