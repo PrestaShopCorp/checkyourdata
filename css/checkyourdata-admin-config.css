@@ -88,8 +88,10 @@
 .panel-transparent {
     background: rgba(249, 249, 249, 0.9) !important;
 }
-
-input#checkyourdata_ganalytics_ua , input#checkyourdata_token {
+div.checkyourdata .row{
+    background:transparent;
+}
+input#checkyourdata_ganalytics_ua , input#checkyourdata_token, input#checkyourdata_email {
     border: 1px solid #72C279;
 }
 

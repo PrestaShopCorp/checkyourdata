@@ -57,7 +57,8 @@
                                        value="{$checkyourdata_site|escape:'htmlall':'UTF-8'}">
 
                                 <div class="form-group">
-                                    <input type="text" id="checkyourdata_email"
+                                    <input type="text" class="form-control"
+                                           id="checkyourdata_email"
                                            name="checkyourdata_email"
                                            placeholder="Email"
                                            value="{$checkyourdata_email|escape:'htmlall':'UTF-8'}">

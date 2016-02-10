@@ -2,7 +2,7 @@
 <module>
     <name>checkyourdata</name>
     <displayName><![CDATA[Check Your Data - Analytics reports 100 percent reliable]]></displayName>
-    <version><![CDATA[1.2.7]]></version>
+    <version><![CDATA[1.3.0]]></version>
     <description><![CDATA[Discover the real return on your marketing investments: collect 100 percent of your sales data in Google Analytics to get the most of your reports with clean, accurate and reliable data.]]></description>
     <author><![CDATA[Check Your Data - http://www.checkyourdata.net]]></author>
     <tab><![CDATA[analytics_stats]]></tab>

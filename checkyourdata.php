@@ -51,7 +51,7 @@ class CheckYourData extends Module
         $this->name = 'checkyourdata';
         $this->tab = 'analytics_stats';
 
-        $this->version = '1.2.7';
+        $this->version = '1.3.0';
 
         $this->author = 'Check Your Data - http://www.checkyourdata.net';
 
@@ -636,7 +636,6 @@ class CheckYourData extends Module
                 }
             }
         }
-
         elseif (Tools::isSubmit('submit' . $this->name . '_update')) {
             $isOk = true;
             $token = (string)Tools::getValue('checkyourdata_token');
@@ -751,6 +750,7 @@ class CheckYourData extends Module
                 );
             }
         }
+
         $errs = Configuration::get('checkyourdata_last_errors');
         if (!empty($errs)) {
             $output .= $this->displayError($errs);
@@ -769,15 +769,11 @@ class CheckYourData extends Module
         }
 
         $token = Configuration::get('checkyourdata_token');
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
-            // HelperForm not defined in PS 1.4
-            $output .= $this->displayFormPs14();
+
+        if (empty($token)) {
+            $output .= $this->displayFormNoAccount($output);
         } else {
-            if (empty($token)) {
-                $output .= $this->displayFormNoAccount($output);
-            } else {
-                $output .= $this->displayForm();
-            }
+            $output .= $this->displayForm();
         }
 
         return $output;
@@ -786,7 +782,8 @@ class CheckYourData extends Module
     public function displayFormNoAccount($output)
     {
 
-        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
+        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/bootstrap-cyd.css">';
+        $stylesheets .= '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
         $output = $stylesheets.$output;
 
         $languages = Language::getLanguages(true, $this->context->shop->id);
@@ -810,14 +807,8 @@ class CheckYourData extends Module
             $this->name.'_ps_version_class' => 'ps-'.str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
         ));
 
+        $output .= $this->display(__FILE__, 'views/templates/admin/configuration_no_account.tpl') ;
 
-
-        if (version_compare(_PS_VERSION_,'1.6','<')) {
-            // no bootstrap
-            $output .= $this->display(__FILE__, 'views/templates/admin/configuration_no_account_ps15.tpl') . $output;
-        } else {
-            $output .= $this->display(__FILE__, 'views/templates/admin/configuration_no_account.tpl') ;
-        }
         return $output;
 
     }
@@ -830,7 +821,8 @@ class CheckYourData extends Module
     public function displayForm($output)
     {
 
-        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
+        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/bootstrap-cyd.css">';
+        $stylesheets .= '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
         $output = $stylesheets.$output;
 
         // TRACKERS
@@ -867,13 +859,7 @@ class CheckYourData extends Module
             $this->name.'_ps_version_class' => 'ps-'.str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
         ));
 
-
-        if (version_compare(_PS_VERSION_,'1.6','<')) {
-            // no bootstrap
-            $output .= $this->display(__FILE__, 'views/templates/admin/configuration_ps15.tpl') . $output;
-        } else {
-            $output .= $this->display(__FILE__, 'views/templates/admin/configuration.tpl') ;
-        }
+        $output .= $this->display(__FILE__, 'views/templates/admin/configuration.tpl') ;
         return $output;
     }
 
