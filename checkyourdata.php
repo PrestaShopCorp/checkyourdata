@@ -12,9 +12,9 @@
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
  *
- *  @author    Check Your Data <contact@checkyourdata.net>
- *  @copyright 2015 CheckYourData
- *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * @author    Check Your Data <contact@checkyourdata.net>
+ * @copyright 2015 CheckYourData
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
 class CheckYourData extends Module
@@ -58,13 +58,13 @@ class CheckYourData extends Module
         // warnings in admin
         $this->need_instance = 1;
 
-        if (version_compare(_PS_VERSION_,'1.5.6.2','>=')) {
+        if (version_compare(_PS_VERSION_, '1.5.6.2', '>=')) {
             // BUG prestashop on v1.5.4.1 => compliancy not used properly
             // BUG fixed on v1.5.6.2.
             $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
         }
 
-        if (version_compare(_PS_VERSION_,'1.6','>=')) {
+        if (version_compare(_PS_VERSION_, '1.6', '>=')) {
             // from PS1.6, theme bootstrap
             $this->bootstrap = true;
         }
@@ -73,6 +73,7 @@ class CheckYourData extends Module
 
         $this->displayName = $this->l('Check Your Data - Analytics reports 100 percent reliable');
         $this->description = $this->l('Discover the real return on your marketing investments: collect 100 percent of your sales data in Google Analytics to get the most of your reports with clean, accurate and reliable data.');
+
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
         // Warning if token not set
@@ -87,13 +88,15 @@ class CheckYourData extends Module
                 if ($dt > $dend) {
                     $this->warning = $this->l('Demo ended. Your data are no more tracked. Please complete your account informations on Check Your Data App');
                 } else {
-                    $this->warning = $this->l('Demo active. Your data are tracked until').' '.$dend->format('d/m/Y H:i:s');
+                    $this->warning = $this->l('Demo active. Your data are tracked until')
+                        . ' '
+                        . $dend->format('d/m/Y H:i:s');
                 }
             }
         }
 
 
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             /** Backward compatibility */
             require(_PS_MODULE_DIR_ . $this->name . '/backward_compatibility/backward.php');
         }
@@ -127,23 +130,23 @@ class CheckYourData extends Module
         $ko = $ko || !$this->unregisterHook('paymentTop');
         $ko = $ko || !$this->unregisterHook('updateOrderStatus');
 
-        if (version_compare(_PS_VERSION_,'1.5','>=') && version_compare(_PS_VERSION_,'1.6','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '>=') && version_compare(_PS_VERSION_, '1.6', '<')) {
             $ko = $ko || !$this->unregisterHook('displayMobileHeader');
         }
 
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             // REFUND
             $ko = $ko || !$this->unregisterHook('cancelProduct');
         } else {
             // REFUND
-            if (version_compare(_PS_VERSION_,'1.6','<')) {
+            if (version_compare(_PS_VERSION_, '1.6', '<')) {
                 $ko = $ko || !$this->unregisterHook('displayAdminOrder');
             }
 
             $ko = $ko || !$this->unregisterHook('actionObjectOrderDetailUpdateAfter');
             $ko = $ko || !$this->unregisterHook('displayAdminOrderContentOrder');
         }
-        
+
         $ko = $ko || !parent::uninstall();
 
         if (!$ko) {
@@ -170,16 +173,16 @@ class CheckYourData extends Module
         $ko = $ko || !$this->registerHook('paymentTop');
         $ko = $ko || !$this->registerHook('updateOrderStatus');
 
-        if (version_compare(_PS_VERSION_,'1.5','>=') && version_compare(_PS_VERSION_,'1.6','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '>=') && version_compare(_PS_VERSION_, '1.6', '<')) {
             $ko = $ko || !$this->registerHook('displayMobileHeader');
         }
 
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             // REFUND
             $ko = $ko || !$this->registerHook('cancelProduct');
         } else {
             // REFUND
-            if (version_compare(_PS_VERSION_,'1.6','<')) {
+            if (version_compare(_PS_VERSION_, '1.6', '<')) {
                 $ko = $ko || !$this->registerHook('displayAdminOrder');
             }
 
@@ -601,7 +604,7 @@ class CheckYourData extends Module
     {
 
         $output = '';
-        if (Tools::isSubmit('submit' . $this->name.'_signin_token')) {
+        if (Tools::isSubmit('submit' . $this->name . '_signin_token')) {
 
             // reset errors
             Configuration::updateValue('checkyourdata_last_errors', '');
@@ -635,8 +638,7 @@ class CheckYourData extends Module
                     );
                 }
             }
-        }
-        elseif (Tools::isSubmit('submit' . $this->name . '_update')) {
+        } elseif (Tools::isSubmit('submit' . $this->name . '_update')) {
             $isOk = true;
             $token = (string)Tools::getValue('checkyourdata_token');
             $token = trim($token);
@@ -678,7 +680,7 @@ class CheckYourData extends Module
 
                     // save trackers conf
                     $JSON_trackers = Tools::jsonEncode($trackers);
-                    if (Configuration::get('checkyourdata_trackers') != $JSON_trackers){
+                    if (Configuration::get('checkyourdata_trackers') != $JSON_trackers) {
                         Configuration::updateValue('checkyourdata_trackers', $JSON_trackers, true);
                         $trackerUpdated = true;
                     }
@@ -692,10 +694,10 @@ class CheckYourData extends Module
                     // send params to APP if token set
                     $res = $this->sendShopParamsToApp($token);
                     if ($res['state'] == 'ok') {
-                        if ($tokenUpdated){
+                        if ($tokenUpdated) {
                             $output .= $this->displayConfirmation($this->l('Token updated'));
                         }
-                        if ($trackerUpdated){
+                        if ($trackerUpdated) {
                             $output .= $this->displayConfirmation(
                                 sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                             );
@@ -706,8 +708,7 @@ class CheckYourData extends Module
 
 
             }
-        }
-        elseif (Tools::isSubmit('submit' . $this->name . '_token_valide')) {
+        } elseif (Tools::isSubmit('submit' . $this->name . '_token_valide')) {
 
             $token = (string)Tools::getValue('checkyourdata_token');
             $ua = (string)Tools::getValue('checkyourdata_ganalytics_ua');
@@ -730,7 +731,7 @@ class CheckYourData extends Module
 
             // save trackers conf
             $JSON_trackers = Tools::jsonEncode($trackers);
-            if (Configuration::get('checkyourdata_trackers') != $JSON_trackers){
+            if (Configuration::get('checkyourdata_trackers') != $JSON_trackers) {
                 Configuration::updateValue('checkyourdata_trackers', $JSON_trackers, true);
                 $trackerUpdated = true;
             }
@@ -741,10 +742,10 @@ class CheckYourData extends Module
                 $tokenUpdated = true;
             }
 
-            if ($tokenUpdated){
+            if ($tokenUpdated) {
                 $output .= $this->displayConfirmation($this->l('Token updated'));
             }
-            if ($trackerUpdated){
+            if ($trackerUpdated) {
                 $output .= $this->displayConfirmation(
                     sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                 );
@@ -762,9 +763,13 @@ class CheckYourData extends Module
             $dt = new DateTime();
             $dend = DateTime::createFromFormat('Y-m-d H:i:s', $demoEnd);
             if ($dt > $dend) {
-                $output .= $this->displayError($this->l('Demo ended. Your data are no more tracked. Please complete your account informations on Check Your Data App'));
+                $output .= $this->displayError(
+                    $this->l('Demo ended. Your data are no more tracked. Please complete your account informations on Check Your Data App')
+                );
             } else {
-                $output .= $this->displayConfirmation($this->l('Demo active. Your data are tracked until') . ' ' . $dend->format('d/m/Y H:i:s'));
+                $output .= $this->displayConfirmation(
+                    $this->l('Demo active. Your data are tracked until') . ' ' . $dend->format('d/m/Y H:i:s')
+                );
             }
         }
 
@@ -782,9 +787,9 @@ class CheckYourData extends Module
     public function displayFormNoAccount($output)
     {
 
-        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/bootstrap-cyd.css">';
-        $stylesheets .= '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
-        $output = $stylesheets.$output;
+        $stylesheets = '<link rel="stylesheet" href="' . $this->_path . 'views/css/bootstrap-cyd.css">';
+        $stylesheets .= '<link rel="stylesheet" href="' . $this->_path . 'views/css/checkyourdata-admin-config.css">';
+        $output = $stylesheets . $output;
 
         $languages = Language::getLanguages(true, $this->context->shop->id);
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
@@ -792,22 +797,22 @@ class CheckYourData extends Module
         $employee = $this->context->employee;
 
         $this->context->smarty->assign(array(
-            $this->name.'_form_action' => ' http://' . self::$dcUrl.'actions/prestashop.php?action=register',
-            $this->name.'_email' => $employee->email,
-            $this->name.'_lastname' => $employee->lastname,
-            $this->name.'_firstname' => $employee->firstname,
-            $this->name.'_site' => $this->getShopUrl(),
-            $this->name.'_languages' => $languages,
-            $this->name.'_current_language' => $default_lang,
-            $this->name.'_back_url' => $this->getCompleteAdminUrl(),
-            $this->name.'_url_app' => 'http://' . self::$dcUrl,
-            $this->name.'_url_cgv' => 'http://' . self::$dcUrl . 'cgv.php',
+            $this->name . '_form_action' => ' http://' . self::$dcUrl . 'actions/prestashop.php?action=register',
+            $this->name . '_email' => $employee->email,
+            $this->name . '_lastname' => $employee->lastname,
+            $this->name . '_firstname' => $employee->firstname,
+            $this->name . '_site' => $this->getShopUrl(),
+            $this->name . '_languages' => $languages,
+            $this->name . '_current_language' => $default_lang,
+            $this->name . '_back_url' => $this->getCompleteAdminUrl(),
+            $this->name . '_url_app' => 'http://' . self::$dcUrl,
+            $this->name . '_url_cgv' => 'http://' . self::$dcUrl . 'cgv.php',
 
-            $this->name.'_form_token_action' => $this->getAdminUrl(),
-            $this->name.'_ps_version_class' => 'ps-'.str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
+            $this->name . '_form_token_action' => $this->getAdminUrl(),
+            $this->name . '_ps_version_class' => 'ps-' . str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
         ));
 
-        $output .= $this->display(__FILE__, 'views/templates/admin/configuration_no_account.tpl') ;
+        $output .= $this->display(__FILE__, 'views/templates/admin/configuration_no_account.tpl');
 
         return $output;
 
@@ -821,9 +826,9 @@ class CheckYourData extends Module
     public function displayForm($output)
     {
 
-        $stylesheets = '<link rel="stylesheet" href="'.$this->_path.'css/bootstrap-cyd.css">';
-        $stylesheets .= '<link rel="stylesheet" href="'.$this->_path.'css/checkyourdata-admin-config.css">';
-        $output = $stylesheets.$output;
+        $stylesheets = '<link rel="stylesheet" href="' . $this->_path . 'views/css/bootstrap-cyd.css">';
+        $stylesheets .= '<link rel="stylesheet" href="' . $this->_path . 'views/css/checkyourdata-admin-config.css">';
+        $output = $stylesheets . $output;
 
         // TRACKERS
         $trackers = Configuration::get('checkyourdata_trackers');
@@ -849,36 +854,18 @@ class CheckYourData extends Module
 
         $token = Configuration::get('checkyourdata_token');
         $this->context->smarty->assign(array(
-            $this->name.'_form_action' => $this->getAdminUrl(),
-            $this->name.'_url_app' => 'http://'.self::$dcUrl,
-            $this->name.'_form_id' => 'submitcheckyourdata_update',
-            $this->name.'_form_name' => 'submitcheckyourdata_update',
-            $this->name.'_token' => $token,
-            $this->name.'_ganalytics_ua' => $checkyourdata_ganalytics_ua,
-            $this->name.'_current_language' => $lang->iso_code,
-            $this->name.'_ps_version_class' => 'ps-'.str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
+            $this->name . '_form_action' => $this->getAdminUrl(),
+            $this->name . '_url_app' => 'http://' . self::$dcUrl,
+            $this->name . '_form_id' => 'submitcheckyourdata_update',
+            $this->name . '_form_name' => 'submitcheckyourdata_update',
+            $this->name . '_token' => $token,
+            $this->name . '_ganalytics_ua' => $checkyourdata_ganalytics_ua,
+            $this->name . '_current_language' => $lang->iso_code,
+            $this->name . '_ps_version_class' => 'ps-' . str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))
         ));
 
-        $output .= $this->display(__FILE__, 'views/templates/admin/configuration.tpl') ;
+        $output .= $this->display(__FILE__, 'views/templates/admin/configuration.tpl');
         return $output;
-    }
-
-    /**
-     * Configuration form
-     * => PS1.4 only (no HelperForm)
-     * @return string : form html
-     */
-    public function displayFormPs14()
-    {
-        $this->context->smarty->assign(
-            array(
-                'action_url' => $_SERVER['REQUEST_URI'],
-                'token' => Configuration::get('checkyourdata_token'),
-                'trackers' => Tools::jsonDecode(Configuration::get('checkyourdata_trackers'), true),
-                'submit_name' => 'submit' . $this->name,
-            )
-        );
-        return $this->display(__FILE__, 'views/templates/admin/configuration_form_ps14.tpl');
     }
 
     /**
@@ -886,7 +873,7 @@ class CheckYourData extends Module
      */
     public function getShopUrl()
     {
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             return $this->context->link->getPageLink('', true);
         }
         return $this->context->shop->getBaseURL();
@@ -902,7 +889,7 @@ class CheckYourData extends Module
      */
     private function getShippingTotal($order)
     {
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             return $order->total_shipping;
         } else {
             $shipping = $order->getShippingTaxesBreakdown();
@@ -915,7 +902,7 @@ class CheckYourData extends Module
 
     private function getProductDefaultCategory($prod)
     {
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             $p = new Product($prod['product_id']);
             return $p->id_category_default;
         }
@@ -924,7 +911,7 @@ class CheckYourData extends Module
 
     private function getProductReference($prod)
     {
-        if (version_compare(_PS_VERSION_,'1.5','<')) {
+        if (version_compare(_PS_VERSION_, '1.5', '<')) {
             $p = new Product($prod['product_id']);
             return $p->reference;
         }
@@ -996,6 +983,7 @@ class CheckYourData extends Module
                 }
                 // try to resend old carts
                 $newCartsToResend = array();
+                $r = null;
                 foreach ($aCartsToResend as $cid => $trData) {
                     if (empty($cid)) {
                         continue;
@@ -1085,7 +1073,6 @@ class CheckYourData extends Module
      */
     protected function getCompleteAdminUrl()
     {
-        return $_SERVER['REQUEST_SCHEME'].'://'. $_SERVER['HTTP_HOST'].$this->getAdminUrl();
+        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $this->getAdminUrl();
     }
-
 }
