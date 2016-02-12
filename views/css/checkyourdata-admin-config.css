@@ -2,7 +2,7 @@
 .checkyourdata .col-md-6.right-block {
     padding-top: 80px;
     float: right;
-    background: #ffffff url("../views/img/bo_background-right.png") no-repeat top left;
+    background: #ffffff url("../img/bo_background-right.png") no-repeat top left;
     background-size: 100%;
     height: 700px;
 }
