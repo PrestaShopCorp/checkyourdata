@@ -36,10 +36,10 @@ class CheckYourData extends Module
 
         // Environement configuration
         $host = $_SERVER['HTTP_HOST'];
-        if (strpos($host, 'ribie.re')) {
+        if (strpos($host, 'rec.cyd.com')) {
             // RECETTE
             self::$dcUrl = 'app-preprod.checkyourdata.net/';
-        } elseif (strpos($host, 'cyd.com') || strpos($host, 'dc.com')) {
+        } elseif (strpos($host, 'cyd.com')) {
             // LOCAL
             self::$dcUrl = 'app2.cyd.com/';
         }
@@ -95,7 +95,6 @@ class CheckYourData extends Module
             }
         }
 
-
         if (version_compare(_PS_VERSION_, '1.5', '<')) {
             /** Backward compatibility */
             require(_PS_MODULE_DIR_ . $this->name . '/backward_compatibility/backward.php');
@@ -148,7 +147,6 @@ class CheckYourData extends Module
         }
 
         $ko = $ko || !parent::uninstall();
-
         if (!$ko) {
             // reset conf data
             Configuration::updateValue('checkyourdata_token', '');
@@ -188,6 +186,9 @@ class CheckYourData extends Module
 
             $ko = $ko || !$this->registerHook('actionObjectOrderDetailUpdateAfter');
             $ko = $ko || !$this->registerHook('displayAdminOrderContentOrder');
+
+            Tools::clearSmartyCache();
+
         }
 
         return !$ko;
@@ -381,9 +382,7 @@ class CheckYourData extends Module
     public function sendInitOrderToApp($cartId, $trData)
     {
         $data = $this->formatDataToSend($cartId);
-
         return CheckYourDataWSHelper::send(self::$dcUrl, $data, $trData);
-
     }
 
     /**
@@ -400,7 +399,6 @@ class CheckYourData extends Module
 
         // send to APP
         $res = $this->sendOrderToApp($params['id_order'], $params['newOrderStatus']->id);
-
 
         if ($res['state'] != 'ok') {
             // save order to re send
@@ -433,9 +431,6 @@ class CheckYourData extends Module
         // conversion rate
         $conversion_rate = 1;
         $currency = new Currency((int)$order->id_currency);
-        /*if ($order->id_currency != Configuration::get('PS_CURRENCY_DEFAULT')) {
-            $conversion_rate = (float) $currency->conversion_rate;
-        }*/
 
         // amounts (with taxes on shipping)
         $tax = $order->getTotalProductsWithTaxes() - $order->getTotalProductsWithoutTaxes();
@@ -602,7 +597,6 @@ class CheckYourData extends Module
      */
     public function getContent()
     {
-
         $output = '';
         if (Tools::isSubmit('submit' . $this->name . '_signin_token')) {
 
@@ -636,7 +630,11 @@ class CheckYourData extends Module
                     $output .= $this->displayConfirmation(
                         sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                     );
+                }else{
+                    // set token
+                    Configuration::updateValue('checkyourdata_token');
                 }
+
             }
         } elseif (Tools::isSubmit('submit' . $this->name . '_update')) {
             $isOk = true;
@@ -658,7 +656,6 @@ class CheckYourData extends Module
                 }
 
                 if ($isOk) {
-
                     $trackers = array('ganalytics' => array(), 'lengow' => array(), 'netaffiliation' => array());
 
                     // TRACKERS
@@ -705,8 +702,6 @@ class CheckYourData extends Module
                     }
 
                 }
-
-
             }
         } elseif (Tools::isSubmit('submit' . $this->name . '_token_valide')) {
 
@@ -774,11 +769,10 @@ class CheckYourData extends Module
         }
 
         $token = Configuration::get('checkyourdata_token');
-
         if (empty($token)) {
-            $output .= $this->displayFormNoAccount($output);
+            $output = $this->displayFormNoAccount($output);
         } else {
-            $output .= $this->displayForm();
+            $output = $this->displayForm();
         }
 
         return $output;
@@ -937,6 +931,13 @@ class CheckYourData extends Module
         $trans["shipping"] = $cart->getOrderTotal(false, Cart::ONLY_SHIPPING);
         $trans["total"] = $total;
 
+        $currency_code=null;
+        if ($cart->id_currency) {
+            $currency = new Currency((int)$cart->id_currency);
+            if ($currency) {
+                $currency_code = $currency->iso_code;
+            }
+        }
         // items
         $products = $cart->getProducts();
         $items = array();
@@ -957,6 +958,7 @@ class CheckYourData extends Module
             'data' => array(
                 'total' => $trans["total"],
                 'tax' => $trans["tax"],
+                'currency' => $currency_code,
                 'shipping' => $trans["shipping"],
                 'cartId' => $cart->id,
                 'items' => Tools::jsonEncode($items),
