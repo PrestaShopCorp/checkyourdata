@@ -120,11 +120,14 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row cyd-m-m">
                 <a href="{$checkyourdata_url_app|escape:'htmlall':'UTF-8'}"
                    class="btn btn-primary" role="button"> {l s='Advanced settings' mod='checkyourdata'}</a>
             </div>
 
+            <div class="row cyd-m-m">
+                <p><strong>{$checkyourdata_free_periode|escape:'htmlall':'UTF-8'}</strong></p>
+            </div>
         </div>
     </div>
 

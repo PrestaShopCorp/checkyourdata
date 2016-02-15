@@ -707,7 +707,10 @@ class CheckYourData extends Module
 
             $token = (string)Tools::getValue('checkyourdata_token');
             $ua = (string)Tools::getValue('checkyourdata_ganalytics_ua');
+            $freePeriod = (string)Tools::getValue('checkyourdata_end_free');
 
+
+            Configuration::updateValue('checkyourdata_free_period', $freePeriod);
             $trackers = array('ganalytics' => array(), 'lengow' => array(), 'netaffiliation' => array());
 
             // TRACKERS
@@ -772,7 +775,7 @@ class CheckYourData extends Module
         if (empty($token)) {
             $output = $this->displayFormNoAccount($output);
         } else {
-            $output = $this->displayForm();
+            $output = $this->displayForm($output);
         }
 
         return $output;
@@ -847,12 +850,33 @@ class CheckYourData extends Module
         $lang = new Language($default_lang);
 
         $token = Configuration::get('checkyourdata_token');
+
+
+        $free_period = Configuration::get('checkyourdata_free_period');
+        if (!empty($free_period)) {
+
+            $dt = new DateTime();
+            $d_free_period = DateTime::createFromFormat('Y-m-d H:i:s', $free_period);
+            if ($dt > $d_free_period) {
+                $s_free_period = sprintf(
+                    $this->l('Free period finished : %s'),
+                    $d_free_period->format('d/m/Y H:i:s')
+                );
+            }else{
+                $s_free_period = sprintf(
+                    $this->l('Free period finish : %s'),
+                    $d_free_period->format('d/m/Y H:i:s')
+                );
+            }
+        }
+
         $this->context->smarty->assign(array(
             $this->name . '_form_action' => $this->getAdminUrl(),
             $this->name . '_url_app' => 'http://' . self::$dcUrl,
             $this->name . '_form_id' => 'submitcheckyourdata_update',
             $this->name . '_form_name' => 'submitcheckyourdata_update',
             $this->name . '_token' => $token,
+            $this->name . '_free_periode' => $s_free_period,
             $this->name . '_ganalytics_ua' => $checkyourdata_ganalytics_ua,
             $this->name . '_current_language' => $lang->iso_code,
             $this->name . '_ps_version_class' => 'ps-' . str_replace('.', '', Tools::substr(_PS_VERSION_, 0, 3))

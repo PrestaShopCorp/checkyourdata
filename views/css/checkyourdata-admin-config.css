@@ -120,3 +120,7 @@ input#checkyourdata_ganalytics_ua , input#checkyourdata_token, input#checkyourda
 input#checkyourdata_email{
     margin-bottom: 5px;
 }
+
+.cyd-m-m {
+    padding-top: 10px;
+}
