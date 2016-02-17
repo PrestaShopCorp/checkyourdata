@@ -90,6 +90,8 @@
 }
 div.checkyourdata .row{
     background:transparent;
+    margin-right: 0px;
+    margin-left: 0px;
 }
 input#checkyourdata_ganalytics_ua , input#checkyourdata_token, input#checkyourdata_email {
     border: 1px solid #72C279;
@@ -123,4 +125,11 @@ input#checkyourdata_email{
 
 .cyd-m-m {
     padding-top: 10px;
+}
+div.checkyourdata .form-control {
+    font-size: 12px;
+}
+.modal img.img-responsive {
+    width: 50%;
+    margin-bottom: 15px;
 }

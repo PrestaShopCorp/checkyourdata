@@ -187,7 +187,9 @@ class CheckYourData extends Module
             $ko = $ko || !$this->registerHook('actionObjectOrderDetailUpdateAfter');
             $ko = $ko || !$this->registerHook('displayAdminOrderContentOrder');
 
-            Tools::clearSmartyCache();
+            if (version_compare(_PS_VERSION_, '1.6', '>=')) {
+                Tools::clearSmartyCache();
+            }
 
         }
 
@@ -598,6 +600,7 @@ class CheckYourData extends Module
     public function getContent()
     {
         $output = '';
+        $new_install_by_app = false;
         if (Tools::isSubmit('submit' . $this->name . '_signin_token')) {
 
             // reset errors
@@ -630,7 +633,7 @@ class CheckYourData extends Module
                     $output .= $this->displayConfirmation(
                         sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                     );
-                }else{
+                } else {
                     // set token
                     Configuration::updateValue('checkyourdata_token');
                 }
@@ -709,7 +712,6 @@ class CheckYourData extends Module
             $ua = (string)Tools::getValue('checkyourdata_ganalytics_ua');
             $freePeriod = (string)Tools::getValue('checkyourdata_end_free');
 
-
             Configuration::updateValue('checkyourdata_free_period', $freePeriod);
             $trackers = array('ganalytics' => array(), 'lengow' => array(), 'netaffiliation' => array());
 
@@ -748,6 +750,7 @@ class CheckYourData extends Module
                     sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                 );
             }
+            $new_install_by_app =true;
         }
 
         $errs = Configuration::get('checkyourdata_last_errors');
@@ -775,7 +778,14 @@ class CheckYourData extends Module
         if (empty($token)) {
             $output = $this->displayFormNoAccount($output);
         } else {
+            if (version_compare(_PS_VERSION_, '1.6', '<')) {
+                $new_install_by_app = false;
+            }
+            $this->context->smarty->assign(array(
+                $this->name . '_new_install_by_app' => $new_install_by_app
+            ));
             $output = $this->displayForm($output);
+
         }
 
         return $output;
@@ -862,7 +872,7 @@ class CheckYourData extends Module
                     $this->l('Free period finished : %s'),
                     $d_free_period->format('d/m/Y H:i:s')
                 );
-            }else{
+            } else {
                 $s_free_period = sprintf(
                     $this->l('Free period finish : %s'),
                     $d_free_period->format('d/m/Y H:i:s')
