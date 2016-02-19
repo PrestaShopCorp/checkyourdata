@@ -19,8 +19,8 @@
 
 <div class="checkyourdata {$checkyourdata_ps_version_class|escape:'htmlall':'UTF-8'}">
     <div class="row row-eq-height">
-        <div class="col-md-6 right-block">
-            <div class="panel panel-primary panel-transparent col-md-6 col-md-offset-3 signin-box">
+        <div class="col-md-6 right-block" id="cyd_bl_right">
+            <div class="panel panel-primary panel-transparent col-md-8 col-md-offset-2 col-sm-12 signin-box">
                 <div class="panel-body">
                     <div class="row checkyourdata_logo" id="checkyourdata_img_header">
                         <div class="col-lg-12">

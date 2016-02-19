@@ -17,6 +17,7 @@
  *
  *}
 
+
 <div class="checkyourdata {$checkyourdata_ps_version_class|escape:'htmlall':'UTF-8'}">
     <div class="row row-eq-height">
         <div class="col-md-6 right-block">
@@ -46,19 +47,23 @@
                                             <button type="submit"
                                                     id="{$checkyourdata_form_id|escape:'htmlall':'UTF-8'}"
                                                     name="{$checkyourdata_form_name|escape:'htmlall':'UTF-8'}"
-                                                    class="btn btn-success">{l s='Save' mod='checkyourdata'}</button>
+                                                    class="btn btn-success">{l s='Update' mod='checkyourdata'}</button>
                                         </span>
                                     </div>
                                     <div class="row">
                                         <h4>{l s='My key CheckYourData' mod='checkyourdata'}</h4>
-                                        <input type="text" class="form-control"
-                                               id="checkyourdata_token"
-                                               name="checkyourdata_token"
-                                               value="{$checkyourdata_token|escape:'htmlall':'UTF-8'}">
-                                        <button type="submit"
-                                                id="{$checkyourdata_form_id|escape:'htmlall':'UTF-8'}"
-                                                name="{$checkyourdata_form_name|escape:'htmlall':'UTF-8'}"
-                                                class="btn btn-success">{l s='Save' mod='checkyourdata'}</button>
+                                        <div class="row input-group">
+                                            <input type="text" class="form-control"
+                                                   id="checkyourdata_token"
+                                                   name="checkyourdata_token"
+                                                   value="{$checkyourdata_token|escape:'htmlall':'UTF-8'}">
+                                            <span class="input-group-btn">
+                                                <button type="submit"
+                                                        id="{$checkyourdata_form_id|escape:'htmlall':'UTF-8'}"
+                                                        name="{$checkyourdata_form_name|escape:'htmlall':'UTF-8'}"
+                                                        class="btn btn-success">{l s='Update' mod='checkyourdata'}</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -114,7 +119,7 @@
                          height="80"/><br/>
                     <p>
                         <strong>{l s='Responsive Support' mod='checkyourdata'}</strong><br/>
-                        {l s='We reply within 48 hours' mod='checkyourdata'}
+                        {l s='We reply within 48 hours' mod='checkyourdata'}<br />
                         {l s='Call us at: 05 32 09 12 30' mod='checkyourdata'}
                     </p>
                 </div>
@@ -154,7 +159,8 @@
                             {l s='Otherwise, you will collect your data twice. ' mod='checkyourdata'}
                         </p>
                         <p>
-                            {l s='If you need help, please feel free to contact us : contact@checkyourdata.net' mod='checkyourdata'}
+                            {l s='If you need help, please feel free to contact us' mod='checkyourdata'} : <a
+                                    href="mailto:contact@checkyourdata.net">contact@checkyourdata.net</a>
                         </p>
                     </div>
                     <div class="modal-footer">
