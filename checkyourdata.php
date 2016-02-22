@@ -635,7 +635,7 @@ class CheckYourData extends Module
                     );
                 } else {
                     // set token
-                    Configuration::updateValue('checkyourdata_token');
+                    Configuration::updateValue('checkyourdata_token', '');
                 }
 
             }
