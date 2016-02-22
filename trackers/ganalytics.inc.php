@@ -19,7 +19,6 @@
 
 class CheckYourDataGAnalytics
 {
-
     public static function init($cydUa, & $cydModule)
     {
         // verify module ganalytics present
