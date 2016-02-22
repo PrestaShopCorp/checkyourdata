@@ -34,7 +34,7 @@ $_MODULE['<{checkyourdata}prestashop>configuration_no_account_2debf0a6d75ec70fee
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_407e0926319421d1f1e36733caed1ca9'] = 'Nous vous répondons en 48H';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_c9e81ae385fa3c1b7c4ddb48c26bb814'] = 'Appelez nous au : ​05.32.09.12.30';
 $_MODULE['<{checkyourdata}prestashop>configuration_06933067aafd48425d67bcb01bba5cb6'] = 'Modifier';
-$_MODULE['<{checkyourdata}prestashop>configuration_9cafbf0ae0f1d0f7d81a99264fbcc39c'] = 'Ma cgglé d\'accès Check Your Data';
+$_MODULE['<{checkyourdata}prestashop>configuration_9cafbf0ae0f1d0f7d81a99264fbcc39c'] = 'Ma clé d\'accès Check Your Data';
 $_MODULE['<{checkyourdata}prestashop>configuration_4334cd4877095f68b73c944016bf8bb2'] = 'Bienvenue sur Check Your Data';
 $_MODULE['<{checkyourdata}prestashop>configuration_7cd410ea54711c4301672d7c7fdebf62'] = 'Le seul module capable d\'installer, fiabiliser et optimiser Google Analytics pour le E-commerce';
 $_MODULE['<{checkyourdata}prestashop>configuration_c7a9014675061214864c4ddaa2ee34e4'] = 'Mesurer enfin le retour réel de vos investissements marketing !';
