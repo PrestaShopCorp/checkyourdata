@@ -2,8 +2,8 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{checkyourdata}prestashop>checkyourdata_71e0f6486827592b7d1fe9813eece789'] = 'Check Your Data - Rapports Google Analytics 100% fiables';
-$_MODULE['<{checkyourdata}prestashop>checkyourdata_89328e51bb606a5e57957848ab5325b8'] = 'Découvrez le retour réel de vos investissements marketing : obtenez 100  de vos données de vente dans Google Analytics pour analyser vos rapports sur des données propres, exploitables et fiables.';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_5e13329dd9d70cf5c1bb953c485d185e'] = 'Google Analytics Ecommerce Expert Pack';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_1c28bb3fced64959af76071ad9d217b4'] = 'Découvrez  pourquoi Google Analytics Ecommerce Expert Pack  est  devenu  la  solution  de référence pour les Agences PrestaShop Officielles et PROFITEZ DE 30  JOURS D’ESSAI OFFERTS.';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_876f23178c29dc2552c0b48bf23cd9bd'] = 'Etes-vous sûr de vouloir désinstaller ?';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_7db1f963ce59568f7ba1b496c71d1b96'] = 'Clé d\'accès à checkyourdata.net non configurée';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_4fb6f085ae057473b9d25a6ed48509e2'] = 'Démo finie. Vos données ne sont plus envoyées aux trackers. Veuillez compléter les informations de votre compte sur Check Your Data App.';

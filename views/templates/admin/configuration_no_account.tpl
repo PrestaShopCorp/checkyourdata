@@ -24,10 +24,11 @@
                 <div class="panel-body">
                     <div class="row checkyourdata_logo" id="checkyourdata_img_header">
                         <div class="col-lg-12">
-                            <img src="{$checkyourdata_url_app|escape:'htmlall':'UTF-8'}public/img/logo.svg"
+                            <img src="{$checkyourdata_url_app|escape:'htmlall':'UTF-8'}public/img/logo_presta_bo1.3.svg"
                                  alt="CheckYourData"
                                  class="img-responsive" style="width:100%;"/>
                         </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center" >
@@ -114,6 +115,8 @@
 
         <div class="col-md-6 text-center left-block">
             <h2><strong>{l s='Welcome to CheckYourData' mod='checkyourdata'}</strong></h2>
+            <br />
+            <h3><strong>{l s='Google Analytics Ecommerce Expert Pack' mod='checkyourdata'}</strong></h3>
 
             <p>{l s='The most advanced Ecommerce addon dedicated to Google Analytics' mod='checkyourdata'}</p>
 
