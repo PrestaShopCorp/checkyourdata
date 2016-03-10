@@ -26,6 +26,7 @@ class CheckYourData extends Module
      */
     public function __construct()
     {
+
         if (!class_exists('CheckYourDataWSHelper')) {
             include_once dirname(__FILE__) . '/wshelper.inc.php';
         }
@@ -342,7 +343,6 @@ class CheckYourData extends Module
             };
         }
 
-
         if (count($error) == 0) {
             $trData = CheckYourDataWSHelper::getTrackersData();
             $res = $this->sendInitOrderToApp($cart->id, $trData);
@@ -619,17 +619,27 @@ class CheckYourData extends Module
                 Configuration::updateValue('checkyourdata_token', $token);
 
                 // save trackers conf
-                $trackers = array(
-                    'ganalytics' => array('active' => true),
-                    'lengow' => array('active' => false),
-                    'netaffiliation' => array('active' => false)
-                );
+//                $trackers = array(
+//                    'ganalytics' => array('active' => true),
+//                    'lengow' => array('active' => false),
+//                    'netaffiliation' => array('active' => false)
+//                );
 
-                Configuration::updateValue('checkyourdata_trackers', Tools::jsonEncode($trackers), true);
+                Configuration::updateValue('checkyourdata_trackers', null, true);
 
                 // send to app
                 $res = $this->sendShopParamsToApp($token);
                 if ($res['state'] == 'ok') {
+
+                    if (isset($res['data']['trackers'])){
+                        $trackers = Tools::jsonDecode($res['data']['trackers'],true);
+                        $trackers['ganalytics']['active'] = true;
+                        // save trackers conf
+                        $JSON_trackers = Tools::jsonEncode($trackers);
+                        Configuration::updateValue('checkyourdata_trackers', $JSON_trackers, true);
+
+                    }
+
                     $output .= $this->displayConfirmation(
                         sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
                     );
