@@ -3,7 +3,7 @@
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_5e13329dd9d70cf5c1bb953c485d185e'] = 'Google Analytics Ecommerce Expert Pack';
-$_MODULE['<{checkyourdata}prestashop>checkyourdata_1c28bb3fced64959af76071ad9d217b4'] = 'Découvrez pourquoi Google Analytics Ecommerce Expert Pack  est  devenu  la  solution  de référence pour les Agences PrestaShop Officielles et PROFITEZ DE 30  JOURS D’ESSAI OFFERTS.';
+$_MODULE['<{checkyourdata}prestashop>checkyourdata_ae4de3534779907f000b69396031e988'] = 'Boostez votre Google Analytics avec un tracking de vos données de vente 100% fiable ! Et bénéficiez  de  la  seule  solution  certifiée  Google Analytics  Technology Partner [30  JOURS D’ESSAI OFFERTS]';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_876f23178c29dc2552c0b48bf23cd9bd'] = 'Etes-vous sûr de vouloir désinstaller ?';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_7db1f963ce59568f7ba1b496c71d1b96'] = 'Clé d\'accès à checkyourdata.net non configurée';
 $_MODULE['<{checkyourdata}prestashop>checkyourdata_4fb6f085ae057473b9d25a6ed48509e2'] = 'Démo finie. Vos données ne sont plus envoyées aux trackers. Veuillez compléter les informations de votre compte sur Check Your Data App.';
@@ -22,7 +22,7 @@ $_MODULE['<{checkyourdata}prestashop>configuration_no_account_386322b40b61730e5f
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_c9cc8cce247e49bae79f15173ce97354'] = 'Enregistrer';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_4334cd4877095f68b73c944016bf8bb2'] = 'Bienvenue sur Check Your Data';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_5e13329dd9d70cf5c1bb953c485d185e'] = 'Google Analytics Ecommerce Expert Pack';
-$_MODULE['<{checkyourdata}prestashop>configuration_no_account_fa82ec008414e0024329f40f841ae47b'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100&#37; fiables.';
+$_MODULE['<{checkyourdata}prestashop>configuration_no_account_fa82ec008414e0024329f40f841ae47b'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100% fiables.';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_5c2914cc010b2b4be972acdbf378e146'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100% fiables.';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_e654f7a86a4458b9cd662267e0f29b52'] = 'BENEFICES';
 $_MODULE['<{checkyourdata}prestashop>configuration_no_account_c55baa8f8726398fe5442c744dd04839'] = 'Tranquillité d’esprit';
@@ -38,7 +38,7 @@ $_MODULE['<{checkyourdata}prestashop>configuration_06933067aafd48425d67bcb01bba5
 $_MODULE['<{checkyourdata}prestashop>configuration_9cafbf0ae0f1d0f7d81a99264fbcc39c'] = 'Ma clé d\'accès Check Your Data';
 $_MODULE['<{checkyourdata}prestashop>configuration_4334cd4877095f68b73c944016bf8bb2'] = 'Bienvenue sur Check Your Data';
 $_MODULE['<{checkyourdata}prestashop>configuration_5e13329dd9d70cf5c1bb953c485d185e'] = 'Google Analytics Ecommerce Expert Pack';
-$_MODULE['<{checkyourdata}prestashop>configuration_fa82ec008414e0024329f40f841ae47b'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100&#37; fiables.';
+$_MODULE['<{checkyourdata}prestashop>configuration_fa82ec008414e0024329f40f841ae47b'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100% fiables.';
 $_MODULE['<{checkyourdata}prestashop>configuration_5c2914cc010b2b4be972acdbf378e146'] = 'Google Analytics est un outil formidable pour analyser, mais nettement moins bon pour ce qui est de la collecte de vos données. Alors Boostez­ le sans attendre ! et obtenez des données de vente propres, exhaustives et 100% fiables.';
 $_MODULE['<{checkyourdata}prestashop>configuration_e654f7a86a4458b9cd662267e0f29b52'] = 'BENEFICES';
 $_MODULE['<{checkyourdata}prestashop>configuration_c55baa8f8726398fe5442c744dd04839'] = 'Tranquillité d’esprit';

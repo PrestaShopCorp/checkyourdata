@@ -73,7 +73,7 @@ class CheckYourData extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Google Analytics Ecommerce Expert Pack');
-        $this->description = $this->l('Discover why Google Analytics Ecommerce Expert Pack is the module selected by the most important PrestaShop Official Agencies  and ENJOY A 30-DAY FREE TRIAL');
+        $this->description = $this->l('Unlock the power of your Google Analytics with the most advanced tracking method: 100% reliable  sales data.  Benefit from a Certified Google Analytics Technology Partner module and [GET YOUR 30­DAY FREE TRIAL]');
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
