@@ -79,11 +79,8 @@
             <br />
             <h3><strong>{l s='Google Analytics Ecommerce Expert Pack' mod='checkyourdata'}</strong></h3>
 
-            <p>{l s='The most advanced Ecommerce addon dedicated to Google Analytics' mod='checkyourdata'}</p>
+            <p>{l s='Google Analytics is an outstanding analysis tool, but not that good regarding data tracking. Fix it right away to unlock the power of your Analytics! Get clean, compelling and 100% reliable sales data.' mod='checkyourdata'}</p>
 
-            <p>{l s='Check your Data perfecly implement Google Analytics and Optimize you Data. Then you will be able to Measure the real return on your marketing investment!' mod='checkyourdata'}</p>
-
-            {*<p><strong>-</strong></p>*}
             <h4><strong>{l s='Benefits' mod='checkyourdata'}</strong></h4>
 
             <div class="row">
@@ -92,15 +89,15 @@
                          height="80"/><br/>
                     <p>
                         <strong>{l s='Focusing on data-driven Strategy' mod='checkyourdata'}</strong><br/>
-                        {l s='Unmatched Quality Data' mod='checkyourdata'}
+                        {l s='Offer without obligation that fits your needs from 20€/month' mod='checkyourdata'}
                     </p>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/time.png" width="80"
+                    <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/money_bag.png" width="80"
                          height="80"/><br/>
                     <p>
-                        <strong>{l s='Easy setup' mod='checkyourdata'}</strong><br/>
-                        {l s='A simple and fast module to install' mod='checkyourdata'}
+                        <strong>{l s='Profitable' mod='checkyourdata'}</strong><br/>
+                        {l s='Save time and money witha 1­click Google Analytics Ecommerce Installation' mod='checkyourdata'}
                     </p>
                 </div>
             </div>
@@ -111,8 +108,8 @@
                          width="80"
                          height="80"/><br/>
                     <p>
-                        <strong>{l s='Custom settings' mod='checkyourdata'}</strong><br/>
-                        {l s='Your needs deserve a customized experience' mod='checkyourdata'}
+                        <strong>{l s='Easy to install' mod='checkyourdata'}</strong><br/>
+                        {l s='Simple­dead setup without hiring an IT guy' mod='checkyourdata'}
                     </p>
                 </div>
                 <div class="col-md-6 text-center">
@@ -120,7 +117,7 @@
                          width="80"
                          height="80"/><br/>
                     <p>
-                        <strong>{l s='Responsive Support' mod='checkyourdata'}</strong><br/>
+                        <strong>{l s='Need Help ?' mod='checkyourdata'}</strong><br/>
                         {l s='We reply within 48 hours' mod='checkyourdata'}<br />
                         {l s='Call us at: 05 32 09 12 30' mod='checkyourdata'}
                     </p>
