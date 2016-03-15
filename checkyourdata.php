@@ -73,7 +73,7 @@ class CheckYourData extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Google Analytics Ecommerce Expert Pack');
-        $this->description = $this->l('Discover why Google Analytics Ecommerce Expert Pack is the module selected by the most important PrestaShop Official Agencies  and ENJOY A 30­DAY FREE TRIAL');
+        $this->description = $this->l('Discover why Google Analytics Ecommerce Expert Pack is the module selected by the most important PrestaShop Official Agencies  and ENJOY A 30-DAY FREE TRIAL');
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 
@@ -739,6 +739,10 @@ class CheckYourData extends Module
             $trackers['netaffiliation']['active'] = $netaffiliation_active;
             $trackers['netaffiliation']['id'] = (string)Tools::getValue('checkyourdata_netaffiliation_id');
 
+
+            // send params to APP if token set
+            $res = $this->sendShopParamsToApp();
+
             // save trackers conf
             $JSON_trackers = Tools::jsonEncode($trackers);
             if (Configuration::get('checkyourdata_trackers') != $JSON_trackers) {
@@ -752,14 +756,20 @@ class CheckYourData extends Module
                 $tokenUpdated = true;
             }
 
-            if ($tokenUpdated) {
-                $output .= $this->displayConfirmation($this->l('Token updated'));
+
+            // send params to APP if token set
+            $res = $this->sendShopParamsToApp($token);
+            if ($res['state'] == 'ok') {
+                if ($tokenUpdated) {
+                    $output .= $this->displayConfirmation($this->l('Token updated'));
+                }
+                if ($trackerUpdated) {
+                    $output .= $this->displayConfirmation(
+                        sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
+                    );
+                }
             }
-            if ($trackerUpdated) {
-                $output .= $this->displayConfirmation(
-                    sprintf($this->l('Configuration saved on %s'), 'https://' . self::$dcUrl)
-                );
-            }
+
             $new_install_by_app =true;
         }
 

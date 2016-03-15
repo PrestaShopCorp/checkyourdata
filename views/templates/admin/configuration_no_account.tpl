@@ -117,9 +117,11 @@
             <h2><strong>{l s='Welcome to CheckYourData' mod='checkyourdata'}</strong></h2>
             <br />
             <h3><strong>{l s='Google Analytics Ecommerce Expert Pack' mod='checkyourdata'}</strong></h3>
-
-            <p>{l s='Google Analytics is an outstanding analysis tool, but not that good regarding data tracking. Fix it right away to unlock the power of your Analytics! Get clean, compelling and 100% reliable sales data.' mod='checkyourdata'}</p>
-
+            {if $checkyourdata_ps_version_class eq 'ps-15'}
+            <p>{l s='Google Analytics is an outstanding analysis tool, but not that good regarding data tracking. Fix it right away to unlock the power of your Analytics! Get clean, compelling and 100&#37; reliable sales data.' mod='checkyourdata'}</p>
+            {else}
+                <p>{l s='Google Analytics is an outstanding analysis tool, but not that good regarding data tracking. Fix it right away to unlock the power of your Analytics! Get clean, compelling and 100% reliable sales data.' mod='checkyourdata'}</p>
+            {/if}
             <h4><strong>{l s='Benefits' mod='checkyourdata'}</strong></h4>
 
             <div class="row">
@@ -135,8 +137,8 @@
                     <img class="center-block" src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/money_bag.png" width="80"
                          height="80"/><br/>
                     <p>
-                        <strong>{l s='Profitable' mod='checkyourdata'}</strong><br/>
-                        {l s='Save time and money witha 1­click Google Analytics Ecommerce Installation' mod='checkyourdata'}
+                        <strong>{l s='Save time and money' mod='checkyourdata'}</strong><br/>
+                        {l s='With a 1­click Google Analytics Ecommerce Installation' mod='checkyourdata'}
                     </p>
                 </div>
             </div>
