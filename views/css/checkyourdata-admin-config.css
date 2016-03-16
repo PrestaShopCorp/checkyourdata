@@ -1,0 +1,193 @@
+
+.checkyourdata .col-md-6.right-block {
+    padding-top: 80px;
+    float: right;
+    background: #ffffff url("../img/bo_background-right.png") no-repeat top left;
+    background-size: 100%;
+    height: 700px;
+}
+
+.checkyourdata .col-md-6.text-center.left-block {
+    padding: 0 4em;
+}
+
+.row.checkyourdata_logo {
+
+}
+
+.checkyourdata h2 {
+    margin-bottom: 25px;
+}
+
+.checkyourdata h4 {
+    margin-bottom: 25px;
+
+}
+
+div.checkyourdata h4, div.checkyourdata .h4 {
+    margin-top: 30px;
+}
+
+.checkyourdata .right-block h4 {
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.checkyourdata p {
+    margin-bottom: 25px;
+}
+
+.checkyourdata div.form-group {
+    padding: 1% 8% 1% 8%;
+}
+
+.checkyourdata .row.exist-token {
+    margin-top: 70%;
+}
+.checkyourdata.ps-15 .row.exist-token {
+     margin-top: 58%;
+ }
+@media (max-width: 770px) {
+    .checkyourdata .row.exist-token {
+        margin-top: 15px;
+    }
+    .checkyourdata.ps-15 .row.exist-token {
+        margin-top: 15px;
+    }
+    .checkyourdata.ps-14 .row.exist-token {
+        margin-top: 15px;
+    }
+}
+@media (min-width: 770px) and (max-width: 990px){
+    .checkyourdata .row.exist-token {
+        margin-top: 82%;
+    }
+    .checkyourdata.ps-14 .row.exist-token {
+        margin-top: 67%;
+    }
+    .checkyourdata.ps-15 .row.exist-token {
+         margin-top: 67%;
+     }
+}
+
+
+@media (max-width: 990px) {
+    .checkyourdata .col-md-6.right-block {
+        float: none;
+    }
+
+}
+
+@media (max-width: 1300px) {
+    .checkyourdata .col-md-6.right-block {
+        padding-top: 3%;
+    }
+}
+@media (max-width: 1150px) {
+    .checkyourdata .col-md-6.right-block {
+        padding-top: 10px;
+    }
+}
+
+
+@media ( min-width: 990px) and (max-width: 1120px) {
+    .checkyourdata .signin-box {
+        margin-bottom: 5px !important;
+    }
+
+    .checkyourdata .row.exist-token {
+        margin-top: 0px;
+    }
+}
+
+.checkyourdata {
+    background-color: white;
+}
+
+.signin-box .panel-body {
+    padding: 0;
+}
+
+.signin-box .panel-body p {
+    margin-bottom: 0px;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.panel-transparent {
+    background: rgba(249, 249, 249, 0.9) !important;
+}
+
+div.checkyourdata .row {
+    background: transparent;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+input#checkyourdata_ganalytics_ua, input#checkyourdata_token, input#checkyourdata_email {
+    border: 1px solid #72C279;
+}
+
+.login-box .panel-body {
+    padding: 0;
+}
+
+.login-box .panel-body p {
+    margin-bottom: 10px;
+}
+
+.left-block p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.left-block .row p {
+    padding: 0 10px 0 10px;
+    font-size: 1em;
+}
+
+.google-partner {
+    margin-top: 10px;
+}
+
+input#checkyourdata_email {
+    margin-bottom: 5px;
+}
+
+.cyd-m-m {
+    padding-top: 10px;
+}
+
+div.checkyourdata .form-control {
+    font-size: 12px;
+}
+
+.modal img.img-responsive {
+    width: 50%;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 1700px) {
+    .checkyourdata .row.exist-token {
+        margin-top: 58%;
+    }
+}
+
+@media (max-width: 1200px) {
+    div.checkyourdata .panel-body {
+        padding: 10px;
+    }
+    #content.bootstrap #cyd_bl_right .panel {
+        padding: 10px;
+    }
+}
+
+.row .col-md-12.text-center {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.panel.panel-primary.panel-transparent.col-md-8.col-md-offset-2.signin-box {
+    padding-left: 0px;
+    padding-right: 0px;
+}
